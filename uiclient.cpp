@@ -21,6 +21,7 @@ UIClient::UIClient(QObject* controller) :
     connect(ui->pushButtonRetrait, SIGNAL(clicked()), controller, SLOT(onRetrait_UIClient()));
     connect(ui->pushButtonVersement, SIGNAL(clicked()), controller, SLOT(onVersement_UIClient()));
     connect(ui->pushButtonHistorique, SIGNAL(clicked()), controller, SLOT(onHistorique_UIClient()));
+    connect(ui->pushButtonNotif, SIGNAL(clicked()), controller, SLOT(onNotification_UIClient()));
     //-
     connect(ui->pushButtonOK, SIGNAL(clicked()), controller, SLOT(onOK_UIClient()));
     connect(ui->pushButtonCancel, SIGNAL(clicked()), controller, SLOT(onCancel_UIClient()));

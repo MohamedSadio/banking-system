@@ -118,7 +118,7 @@
        </property>
       </spacer>
      </item>
-	 <item>
+     <item>
       <widget class="QPushButton" name="pushButtonNouveau">
        <property name="text">
         <string>Nouveau</string>
@@ -155,7 +155,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

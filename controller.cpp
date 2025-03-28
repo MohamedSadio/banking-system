@@ -290,6 +290,14 @@ void Controller::onComboBoxRoleChanged_UIUser()
 /*
  * Les slots de la fenêtre UIClient
  */
+void Controller::onClose_UINotif(){
+    uiNotif.hide();
+    uiClient.show();
+}
+
+/*
+ * Les slots de la fenêtre UIClient
+ */
 void Controller::onClose_UIClient()
 {
     uiClient.hide();
@@ -368,6 +376,14 @@ void Controller::onHistorique_UIClient()
     uiListTransaction.show();
     service.listerLesTransactions(connectedUser.getId());
     uiListTransaction.top();
+}
+
+void Controller::onNotification_UIClient(){
+    uiClient.hide();
+    uiNotif.setTableViewModel(notifModel);
+    uiNotif.show();
+    service.listerLesNotification(connectedUser.getId());
+    uiNotif.top();
 }
 
 void Controller::onOK_UIClient()

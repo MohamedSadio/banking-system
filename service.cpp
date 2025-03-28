@@ -96,6 +96,11 @@ void Service::listerLesTransactions(int clientId)
     transactionModel->readBy(clientId);
 }
 
+void Service::listerLesNotification(int clientId){
+    notifModele->getSelectionModel()->reset();
+    notifModele->readBy(clientId);
+}
+
 
 void Service::listerLesTransactionsDuCompte()
 {
@@ -132,6 +137,8 @@ bool Service::effectuerUnRetrait(int idClient, double montant)
 
     Transaction transaction ("Retrait", idClient, accountId, -1, account.getNumber(), "NULL", montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "Completed");
     transactionModel->create(transaction);
+    Notif notif(idClient,accountId,"Votre operation de Retrait sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
+    notifModele->create(notif);
 
     return true;
 }
@@ -154,6 +161,8 @@ void Service::effectuerUnVersement(int idClient, double montant)
 
     Transaction transaction ("Versement", idClient, -1, accountId, "NULL", account.getNumber(), montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "Completed");
     transactionModel->create(transaction);
+    Notif notif(idClient,accountId,"Votre operation de Versement sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
+    notifModele->create(notif);
 }
 
 void Service::effectuerUnVirement (int idClient, QString numeroCompteBeneficiaire, double montant)
@@ -170,6 +179,8 @@ void Service::effectuerUnVirement (int idClient, QString numeroCompteBeneficiair
 
     Transaction transaction ("Virement", idClient, accountId, -1, account.getNumber(), numeroCompteBeneficiaire, montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "In progress");
     transactionModel->create(transaction);
+    Notif notif(idClient,accountId,"Votre operation de Virement sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
+    notifModele->create(notif);
 }
 
 void Service::executeTransaction(QMap<QString, QString> input, bool &status, QString &message)

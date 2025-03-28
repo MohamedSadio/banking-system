@@ -14,6 +14,7 @@
 #include "uilisttransaction.h"
 #include "uiclient.h"
 #include "uiaccount.h"
+#include "uinotif.h"
 
 class Controller : public QObject
 {
@@ -29,6 +30,7 @@ private:
     UIClient uiClient {this};
     UIListTransaction uiListTransaction {this};
     UIAccount uiAccount {this};
+    UINotif uiNotif{this};
 
     Role connectedUserType;
     User connectedUser;
@@ -36,6 +38,7 @@ private:
     UserModel* userModel = new UserModel;
     AccountModel* accountModel = new AccountModel;
     TransactionModel* transactionModel = new TransactionModel;
+    NotifModele* notifModel = new NotifModele;
 
     Service service {userModel, accountModel, transactionModel}; // Le classe service pour déclencher les fonctionnalités
 
@@ -77,6 +80,7 @@ private slots:
     void onRetrait_UIClient();
     void onVersement_UIClient();
     void onHistorique_UIClient();
+    void onNotification_UIClient();
     void onOK_UIClient();
     void onCancel_UIClient();
 
@@ -105,6 +109,11 @@ private slots:
     void onCreate_UIAccount();
     void onUpdate_UIAccount();
     void onClose_UIAccount();
+
+    /*
+     * Les slots de la fenêtre UINotif
+     */
+    void onClose_UINotif();
 };
 #endif // CONTROLLER_H
 

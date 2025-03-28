@@ -12,6 +12,8 @@ SOURCES += \
     account.cpp \
     accountmodel.cpp \
     main.cpp \
+    notif.cpp \
+    notifmodele.cpp \
     transaction.cpp \
     uiabstractwindow.cpp \
     controller.cpp \
@@ -33,6 +35,8 @@ SOURCES += \
 HEADERS += \
     account.h \
     accountmodel.h \
+    notif.h \
+    notifmodele.h \
     transaction.h \
     uiabstractwindow.h \
     controller.h \

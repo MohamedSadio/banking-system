@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <uiabstractwindow.h>
 #include <transactionmodel.h>
+#include <QSortFilterProxyModel>
 
 namespace Ui {
 class UIListTransaction;
@@ -22,8 +23,17 @@ public:
     void top();
     ~UIListTransaction();
 
+
+private slots:
+    // Nouveau slot pour gérer le clic sur l'en-tête
+    void onHeaderClicked(int logicalIndex);
+
 private:
     Ui::UIListTransaction *ui;
+    QSortFilterProxyModel *proxyModel;
+    TransactionModel *sourceModel;
+
+     int currentFilterColumn;
 };
 
 #endif // UILISTTRANSACTION_H
