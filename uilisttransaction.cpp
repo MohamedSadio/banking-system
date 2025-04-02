@@ -16,6 +16,7 @@ UIListTransaction::UIListTransaction(QObject* controller) :
     qDebug("Contruction/Initialisation de la fenêtre UIListTransaction ...");
     ui->setupUi(this);
     
+    connect(ui->pushButtonOnGoing, SIGNAL(clicked()), controller, SLOT(onGoing_UIListTransaction()));
 	connect(ui->pushButtonClose, SIGNAL(clicked()), controller, SLOT(onClose_UIListTransaction()));
 }
 

@@ -1,4 +1,5 @@
 #include "transactionmodel.h"
+#include <QSqlError>
 
 TransactionModel::TransactionModel()
 {    
@@ -85,6 +86,25 @@ void TransactionModel::readAll(int accountId)
 
     query.prepare("SELECT id, type, numeroCompteTire,"
                   " numeroCompteBeneficiaire, montant, date, statut FROM t_transactions WHERE idCompteTire=:accountId OR idCompteBeneficiaire=:accountId");
+    query.bindValue(":accountId", accountId);
+    query.exec();
+
+    this->setQuery(query);
+    setHeaderTitle();
+
+    dbManager->close();
+}
+
+void TransactionModel::readAllVirement(int accountId)
+{
+    dbManager->open();
+    QSqlQuery query(dbManager->database());
+
+    query.prepare("SELECT id, type, numeroCompteTire, numeroCompteBeneficiaire, montant, date, statut "
+                  "FROM t_transactions "
+                  "WHERE (idCompteTire = :accountId OR idCompteBeneficiaire = :accountId) "
+                  "AND type = 'Virement' "
+                  "AND statut = 'Waiting'");
     query.bindValue(":accountId", accountId);
     query.exec();
 

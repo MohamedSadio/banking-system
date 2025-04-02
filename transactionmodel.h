@@ -29,6 +29,7 @@ public:
     // Rafraîchit la collection et la tableView ...
     void readAll();
     void readAll(int accountId);
+    void readAllVirement(int accountId);
     void setHeaderTitle();
     void readBy(int clientId);
 };
