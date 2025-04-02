@@ -19,10 +19,13 @@ SOURCES += \
     controller.cpp \
     dbmanager.cpp \
     service.cpp \
+    uiaddclient.cpp \
     uiclient.cpp \
+    uiinspectaccount.cpp \
     uilistuser.cpp \
     uilistclient.cpp \
     uilistaccount.cpp \
+    uilistvirement.cpp \
     uiloginin.cpp \
     uinotif.cpp \
     uiuser.cpp \
@@ -42,10 +45,13 @@ HEADERS += \
     controller.h \
     dbmanager.h \
     service.h \
+    uiaddclient.h \
     uiclient.h \
+    uiinspectaccount.h \
     uilistuser.h \
     uilistclient.h \
     uilistaccount.h \
+    uilistvirement.h \
     uiloginin.h \
     uinotif.h \
     uiuser.h \
@@ -56,10 +62,13 @@ HEADERS += \
     uiaccount.h
 
 FORMS += \
+    uiaddclient.ui \
     uiclient.ui \
+    uiinspectaccount.ui \
     uilistuser.ui \
     uilistclient.ui \
     uilistaccount.ui \
+    uilistvirement.ui \
     uiloginin.ui \
     uinotif.ui \
     uiuser.ui \
