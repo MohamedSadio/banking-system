@@ -16,10 +16,12 @@ private:
     QString email;
     QString role;
     QString statut;
+    int idCreator;
 
 public:
 
     int getId() {return id; };
+    int getIdCreator() {return idCreator;}
     QString getNom() {return nom; };
     QString getPassword() {return password; };
     QString getLogin() {return login; };
@@ -31,6 +33,7 @@ public:
     QString getBirthdate() {return birthdate; };
 
     void setId(int id) {this->id = id;}
+    void setIdCreator(int idCreator) {this->idCreator = idCreator > 0 ? idCreator : this->idCreator;}
     void setNom (QString nom) {this->nom = nom;}
     void setLogin (QString login) {this->login = login;}
     void setPassword (QString password) {this->password = password;}
@@ -42,6 +45,7 @@ public:
 
     User();
     User(QString nom, QString login, QString password, QString country, QString birthdate, QString email, QString role, QString statut);
+    User(QString nom, QString login, QString password, QString country, QString birthdate, QString email, QString role, QString statut, int idCreator);
     User(int id, QString nom, QString login, QString password, QString country, QString birthdate, QString email, QString role, QString statut);
 };
 

@@ -9,6 +9,9 @@ User::User()
 User::User(QString _nom, QString _login, QString _password, QString _country, QString _birthdate, QString _email, QString _role, QString _statut) :
     nom(_nom), login(_login), password(_password), country(_country), birthdate(_birthdate), email(_email), role(_role), statut(_statut)
 {}
+User::User(QString _nom, QString _login, QString _password, QString _country, QString _birthdate, QString _email, QString _role, QString _statut, int _idCreator) :
+    nom(_nom), login(_login), password(_password), country(_country), birthdate(_birthdate), email(_email), role(_role), statut(_statut), idCreator(_idCreator)
+{}
 User::User(int _id, QString _nom, QString _login, QString _password, QString _country, QString _birthdate, QString _email, QString _role, QString _statut) :
     id (_id), nom(_nom), login(_login), password(_password), country(_country), birthdate(_birthdate), email(_email), role(_role), statut(_statut)
 {}
