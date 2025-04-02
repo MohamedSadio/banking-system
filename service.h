@@ -35,6 +35,9 @@ public:
     QString getAccountStatus(const QString& accountNumber);
     // -
     void executeTransaction (QMap<QString, QString> input, bool &status, QString &message);
+    void approuverVirement(QString numeroCompteTire, QString numeroCompteBeneficiaire, double montant);
+//    void rejeterVirement(int idTransaction);
+    bool rejeterVirement(int idTransaction);
 
     Service(UserModel* userModel);
     Service(UserModel* userModel, AccountModel* accountModel);
