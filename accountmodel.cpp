@@ -157,6 +157,28 @@ void AccountModel::readBy(int clientId)
     dbManager->close();
 }
 
+Account AccountModel::readByAccountNumber(QString accountNumber)
+{
+    dbManager->open();
+    QSqlQuery query(dbManager->database());
+    query.prepare("SELECT id, clientId, number, type, balance, statut "
+                  "FROM t_accounts WHERE number=:accountNumber");
+    query.bindValue(":accountNumber", accountNumber);
+    query.exec();
+    Account account;
+    if (query.next())
+    {
+        account.setId(query.record().field("id").value().toInt());
+        account.setIdClient(query.record().field("clientId").value().toInt());
+        account.setNumber(query.record().field("number").value().toString());
+        account.setType(query.record().field("type").value().toString());
+        account.setBalance(query.record().field("balance").value().toDouble());
+        account.setStatut(query.record().field("statut").value().toString());
+    }
+    dbManager->close();
+    return account;
+}
+
 bool AccountModel::gelerCompte(int accountId)
 {
     dbManager->open();
