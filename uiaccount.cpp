@@ -29,6 +29,11 @@ QString UIAccount::getType()
     return ui->comboBoxType->currentText();
 }
 
+QString UIAccount::getStatut()
+{
+    return ui->comboBoxStatut->currentText();
+}
+
 QString UIAccount::getBalance()
 {
     return ui->lineEditBalance->text();
@@ -46,16 +51,17 @@ QString UIAccount::getAccountId()
 
 void UIAccount::reinit()
 {
-    populate("-1", "-1", "", "COURANT", "0");
+    populate("-1", "-1", "", "COURANT", "0", "ACTIF");
 }
 
-void UIAccount::populate (QString accountId, QString idClient, QString accountNumber, QString type, QString balance)
+void UIAccount::populate (QString accountId, QString idClient, QString accountNumber, QString type, QString balance, QString statut)
 {
     ui->lineEditAccountId->setText(accountId);
 	ui->lineEditIdClient->setText(idClient);
     ui->lineEditAccountNumber->setText(accountNumber);    
     ui->comboBoxType->setCurrentText(type);    
     ui->lineEditBalance->setText(balance);
+    ui->comboBoxStatut->setCurrentText(statut);
 }
 
 void UIAccount::updateTitle(QString libelle)
