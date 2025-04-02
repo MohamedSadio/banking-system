@@ -122,6 +122,7 @@ private slots:
      */
     void onClose_UIListTransaction();
     void onGoing_UIListTransaction();
+    void roleButton_UIListTransaction();
 
     /*
      * Les slots de la fenêtre UIListVirement
@@ -130,8 +131,12 @@ private slots:
     void onInspecter_UIListVirement();
 
     /*
-     *
+     * Les slots de la fenêtre UIInspectAccount
      */
+    void onClose_UIInspectAccount();
+    void onApprouver_UIInspectAccount();
+    void onRejeter_UIInspectAccount();
+
     /*
      * Les slots de la fenêtre UIAccount
      */

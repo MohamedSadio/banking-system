@@ -744,6 +744,19 @@ void Controller::onGoing_UIListTransaction()
     uiListVirement.top();
 }
 
+void Controller::roleButton_UIListTransaction()
+{
+    QString role = connectedUser.getRole();
+    if (role.compare("GESTIONNAIRE") == 0)
+    {
+        uiListTransaction.showButton();
+    }
+    else
+    {
+        uiListTransaction.hideButton();
+    }
+}
+
 /*
  * Les slots de la fenêtre UIListVirement
  */
@@ -787,9 +800,58 @@ void Controller::onInspecter_UIListVirement()
     uiInspectAccount.populateInfoComp(compteTire, QString::number(soldeTire), statutTire, compteBeneficiaire, QString::number(soldeBeneficiaire), statutBeneficiaire);
 
     // Afficher l'interface UIInspectAccount
+    uiListVirement.close();
     uiInspectAccount.show();
 
 //    currentVirementId = idTransaction; // Stocke l'ID pour les actions suivantes
+}
+
+/*
+ * Les slots de la fenêtre UIInspectAccount
+ */
+void Controller::onClose_UIInspectAccount()
+{
+    uiInspectAccount.reinit();
+    uiInspectAccount.close();
+    uiListVirement.show();
+    reloadAccounts();
+}
+
+void Controller::onApprouver_UIInspectAccount()
+{
+    // Récupérer l'ID du compte sélectionné
+    QString compteTire = uiInspectAccount.getCompteTire();
+    QString compteBeneficiaire = uiInspectAccount.getCompteBeneficiaire();
+    double montant = uiInspectAccount.getMontant().toDouble();
+
+    // Appeler le service pour approver le virement
+    service.approuverVirement(compteTire, compteBeneficiaire, montant);
+    uiInspectAccount.information("Virement Approuve", "La transaction a été approuve avec succès.");
+    uiInspectAccount.reinit();
+    uiInspectAccount.close();
+    uiListAccount.show();
+    reloadAccounts();
+}
+
+void Controller::onRejeter_UIInspectAccount()
+{   
+    // Récupérer l'ID du compte sélectionné
+    int idTransaction = uiInspectAccount.getIdTransaction().toInt();
+
+    // Appeler le service pour geler le compte
+    bool rejet = service.rejeterVirement(idTransaction);
+
+    if (rejet) {
+        uiInspectAccount.information("Virement Rejette", "La transaction a été rejette avec succès.");
+        uiInspectAccount.reinit();
+        uiInspectAccount.close();
+        uiListTransaction.show();
+        reloadTransactions();
+    } else {
+        uiInspectAccount.critical("Virement Rejette", "Une erreur s'est produite");
+        uiInspectAccount.close();
+    }
+
 }
 
 /*
