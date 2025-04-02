@@ -14,6 +14,7 @@ UIListClient::UIListClient(QObject* controller) :
     qDebug("Contruction/Initialisation de la fenêtre UIListClient ...");
     ui->setupUi(this);
 
+    connect(ui->pushButtonAjout, SIGNAL(clicked()), controller, SLOT(onCreate_UIListClient()));
     connect(ui->pushButtonClose, SIGNAL(clicked()), controller, SLOT(onClose_UIListClient()));
     connect(ui->pushButtonOuvrir, SIGNAL(clicked()), controller, SLOT(onOuvrir_UIListClient()));
 }
