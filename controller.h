@@ -15,6 +15,9 @@
 #include "uiclient.h"
 #include "uiaccount.h"
 #include "uinotif.h"
+#include "uilistvirement.h"
+#include "uiaddclient.h"
+#include "uiinspectaccount.h"
 
 class Controller : public QObject
 {
@@ -31,9 +34,13 @@ private:
     UIListTransaction uiListTransaction {this};
     UIAccount uiAccount {this};
     UINotif uiNotif{this};
+    UIAddClient uiAddClient {this};
+    UiListVirement uiListVirement {this};
+    UIInspectAccount uiInspectAccount {this};
 
     Role connectedUserType;
     User connectedUser;
+    User currentClient;
 
     UserModel* userModel = new UserModel;
     AccountModel* accountModel = new AccountModel;
@@ -46,6 +53,9 @@ public:
     explicit Controller(QObject* parent = nullptr);
     ~Controller();
     void execute();
+    void executeClientList();
+    void reloadTransactions();
+    void reloadAccounts();
 
 private slots:
     /* Les slots de la fenêtre UIListUser
@@ -64,6 +74,13 @@ private slots:
     void onUpdate_UIUser();
     void onList_UIUser();
     void onClose_UIUser();
+
+    /*
+     * Les slots de la fenetre UIAddCLient
+     */
+    void onCreate_UIAddClient();
+    void onClose_UIAddClient();
+
 
     /*
      * Les slots de la fenêtre UILoginIn
@@ -88,6 +105,7 @@ private slots:
      * Les slots de la fenêtre UIListClient
      */
     void onClose_UIListClient();
+    void onCreate_UIListClient();
     void onOuvrir_UIListClient();
 
     /*
@@ -97,12 +115,23 @@ private slots:
     void onModifier_UIListAccount();
     void onOuvrir_UIListAccount();
     void onClose_UIListAccount();
+    void onGeler_UIListAccount();
 
     /*
      * Les slots de la fenêtre UIListTransaction
      */
     void onClose_UIListTransaction();
+    void onGoing_UIListTransaction();
 
+    /*
+     * Les slots de la fenêtre UIListVirement
+     */
+    void onClose_UIListVirement();
+    void onInspecter_UIListVirement();
+
+    /*
+     *
+     */
     /*
      * Les slots de la fenêtre UIAccount
      */

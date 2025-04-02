@@ -17,16 +17,22 @@ public:
     void ajouterUnUser(QString nom, QString login, QString password, QString country, QString birthdate, QString email, QString role, QString statut);
     void modifierUnUser(QString nom, QString login, QString password, QString country, QString birthdate, QString email, QString role, QString statut);
     void ajouterUnCompte(QMap<QString, QString> input);
+    void ajouterUnClient(QString nom, QString login, QString password, QString country, QString birthdate, QString email, QString statut, int idCreator);
     void modifierUnCompte(QMap<QString, QString> input);
+    bool gelerCompte(int accountId);
     void supprimerUnUser();
     bool rechercherUnUser(int id);
     void listerLesUsers();
-    void listerLesClients();
+    void listerLesClients(int id);
     void listerLesTransactions();
     void listerLesTransactionsDuCompte();
+    void listerLesTransactionsDuCompteSpecifique(int accountId);
+    void listerLesVirementDuCompte(int id);
     void listerLesComptes(int clientId);
     void listerLesTransactions(int clientId);
     void listerLesNotification(int clientId);
+    double getAccountBalance(const QString& accountNumber);
+    QString getAccountStatus(const QString& accountNumber);
     // -
     void executeTransaction (QMap<QString, QString> input, bool &status, QString &message);
 

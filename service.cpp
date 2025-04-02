@@ -33,6 +33,13 @@ void Service::ajouterUnUser(QString nom, QString login, QString password, QStrin
     userModel->create(user);
 }
 
+void Service::ajouterUnClient(QString nom, QString login, QString password, QString country, QString birthdate, QString email, QString statut, int idCreator)
+{
+    QString role = "CLIENT";
+    User user(nom, login, password, country, birthdate, email, role, statut, idCreator);
+    userModel->create(user);
+}
+
 void Service::modifierUnUser(QString nom, QString login, QString password, QString country, QString birthdate, QString email, QString role, QString statut)
 {
     QModelIndex selectedIndex = userModel->getSelectionModel()->currentIndex();
@@ -72,10 +79,10 @@ void Service::listerLesUsers()
     userModel->readAll();
 }
 
-void Service::listerLesClients()
+void Service::listerLesClients(int id)
 {
     userModel->getSelectionModel()->reset();
-    userModel->readAllClients();
+    userModel->readAllClients(id);
 }
 
 void Service::listerLesComptes(int clientId)
@@ -112,6 +119,26 @@ void Service::listerLesTransactionsDuCompte()
 
     transactionModel->getSelectionModel()->reset();
     transactionModel->readAll(accountId);
+}
+
+void Service::listerLesTransactionsDuCompteSpecifique(int accountId)
+{
+    transactionModel->getSelectionModel()->reset();
+    transactionModel->readAll(accountId);
+}
+
+double Service::getAccountBalance(const QString& accountNumber) {
+    return accountModel->getAccountBalance(accountNumber);
+}
+
+QString Service::getAccountStatus(const QString& accountNumber) {
+    return accountModel->getAccountStatus(accountNumber);
+}
+
+void Service::listerLesVirementDuCompte(int accountId)
+{
+    transactionModel->getSelectionModel()->reset();
+    transactionModel->readAllVirement(accountId);
 }
 
 bool Service::effectuerUnRetrait(int idClient, double montant)
@@ -177,7 +204,7 @@ void Service::effectuerUnVirement (int idClient, QString numeroCompteBeneficiair
     QDate today = QDate::currentDate();
     QTime now = QTime::currentTime();
 
-    Transaction transaction ("Virement", idClient, accountId, -1, account.getNumber(), numeroCompteBeneficiaire, montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "In progress");
+    Transaction transaction ("Virement", idClient, accountId, -1, account.getNumber(), numeroCompteBeneficiaire, montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "Waiting");
     transactionModel->create(transaction);
     Notif notif(idClient,accountId,"Votre operation de Virement sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
     notifModele->create(notif);
@@ -219,13 +246,19 @@ void Service::ajouterUnCompte(QMap<QString, QString> input)
     QString number = input.value("number");
     QString type = input.value("type");
     QString balance = input.value("balance");
+    QString statut = input.value("statut");
 
-    Account account(idClient.toInt(), number, type, balance.toDouble());
+    bool ok;
+    double balanceValue = balance.toDouble(&ok);
+    if (!ok) {
+        qDebug() << "Erreur de conversion de balance.";
+        return; // ou gérer l'erreur d'une autre manière
+    }
+
+    Account account(idClient.toInt(), number, type, balanceValue, statut);
     accountModel->create(account);
-
-    listerLesComptes(idClient.toInt());
+    //listerLesComptes(idClient.toInt()); // Supprimé, car readAll est déjà appelé
 }
-
 
 void Service::modifierUnCompte(QMap<QString, QString> input)
 {
@@ -234,9 +267,20 @@ void Service::modifierUnCompte(QMap<QString, QString> input)
     QString number = input.value("number");
     QString balance = input.value("balance");
     QString type = input.value("type");
+    QString statut = input.value("statut");
 
-    Account account(accountId.toInt(), idClient.toInt(), number, type, balance.toInt());
+    bool ok;
+    double balanceValue = balance.toDouble(&ok);
+    if (!ok) {
+        qDebug() << "Erreur de conversion de balance.";
+        return; // ou gérer l'erreur d'une autre manière
+    }
+
+    Account account(accountId.toInt(), idClient.toInt(), number, type, balanceValue, statut);
     accountModel->update(account);
-
-    listerLesComptes(idClient.toInt());
+    //listerLesComptes(idClient.toInt()); // Supprimé, car readAll est déjà appelé
+}
+bool Service::gelerCompte(int accountId)
+{
+    return accountModel->gelerCompte(accountId);
 }
