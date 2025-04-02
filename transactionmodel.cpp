@@ -33,6 +33,93 @@ void TransactionModel::create(Transaction transaction)
     readAll(); // recupère les nouvelles données de la base ...
 }
 
+void TransactionModel::updateStatut(Transaction transaction)
+{
+    dbManager->open();
+    QSqlQuery query(dbManager->database());
+
+    query.prepare("UPDATE t_transactions SET "
+                  "statut=:statut "
+                  "WHERE id = :id");
+
+    query.bindValue(":id", transaction.getId());
+    query.bindValue(":statut", transaction.getStatut());    
+
+    query.exec();
+    dbManager->close();
+
+    qDebug("Transaction updated successfully !");
+    readAll(); // recupère les nouvelles données de la base ...
+}
+
+bool TransactionModel::rejeterTransaction(int idTransaction)
+{
+    dbManager->open();
+    QSqlQuery query(dbManager->database());
+
+    query.prepare("UPDATE t_transactions SET statut = 'Denied' WHERE id = :idTransaction");
+    query.bindValue(":idTransaction", idTransaction);
+
+    bool success = query.exec();
+
+    if (!success) {
+        qDebug() << "Erreur lors du gel du compte:" << query.lastError().text();
+    }
+
+    dbManager->close();
+    return success;
+}
+
+Transaction TransactionModel::read(int id)
+{    
+    dbManager->open();
+    QSqlQuery query(dbManager->database());
+
+    query.prepare("SELECT id, type, numeroCompteTire,"
+                  " numeroCompteBeneficiaire, montant, date, statut FROM t_transactions WHERE id=:id");
+    query.bindValue(":id", id);
+    query.exec();
+
+    this->setQuery(query);
+    setHeaderTitle();
+
+    dbManager->close();
+    qDebug() << "TransactionModel::read() : Transaction with id " << id << " read !";
+    Transaction transaction;
+    transaction.setId(query.record().field("id").value().toInt());
+    transaction.setType(query.record().field("type").value().toString());
+    transaction.setNumeroCompteTire(query.record().field("numeroCompteTire").value().toString());
+    transaction.setNumeroCompteBeneficiaire(query.record().field("numeroCompteBeneficiaire").value().toString());
+    transaction.setMontant(query.record().field("montant").value().toDouble());
+    transaction.setDate(query.record().field("date").value().toString());
+    transaction.setStatut(query.record().field("statut").value().toString());
+
+    return transaction;
+}
+
+Transaction TransactionModel::readByBeneficiary(QString accountNumber)
+{
+    dbManager->open();
+    QSqlQuery query(dbManager->database());
+    query.prepare("SELECT id, type, numeroCompteTire,"
+                  " numeroCompteBeneficiaire, montant, date, statut FROM t_transactions WHERE numeroCompteBeneficiaire=:accountNumber");
+    query.bindValue(":accountNumber", accountNumber);
+    query.exec();
+    Transaction transaction;
+    if (query.next())
+    {
+        transaction.setId(query.record().field("id").value().toInt());
+        transaction.setType(query.record().field("type").value().toString());
+        transaction.setNumeroCompteTire(query.record().field("numeroCompteTire").value().toString());
+        transaction.setNumeroCompteBeneficiaire(query.record().field("numeroCompteBeneficiaire").value().toString());
+        transaction.setMontant(query.record().field("montant").value().toDouble());
+        transaction.setDate(query.record().field("date").value().toString());
+        transaction.setStatut(query.record().field("statut").value().toString());
+    }
+    dbManager->close();
+    return transaction;
+}
+
 QList<Transaction> TransactionModel::list()
 {
     Transaction transaction;
@@ -103,7 +190,7 @@ void TransactionModel::readAllVirement(int accountId)
     query.prepare("SELECT id, type, numeroCompteTire, numeroCompteBeneficiaire, montant, date, statut "
                   "FROM t_transactions "
                   "WHERE (idCompteTire = :accountId OR idCompteBeneficiaire = :accountId) "
-                  "AND type = 'Virement' "
+                  "AND type = 'VIREMENT' "
                   "AND statut = 'Waiting'");
     query.bindValue(":accountId", accountId);
     query.exec();
@@ -129,6 +216,23 @@ void TransactionModel::readBy(int clientId)
 
     dbManager->close();
 }
+
+// void TransactionModel::read(int idTransaction)
+// {
+//     dbManager->open();
+//     QSqlQuery query(dbManager->database());
+
+//     query.prepare("SELECT id, type, numeroCompteTire,"
+//                   " numeroCompteBeneficiaire, montant, date, statut FROM t_transactions WHERE id=:idTransaction");
+//     query.bindValue(":idTransaction", idTransaction);
+//     query.exec();
+
+//     this->setQuery(query);
+//     setHeaderTitle();
+
+//     dbManager->close();
+//     qDebug() << "TransactionModel::read() : Transaction with id " << idTransaction << " read !";
+// }
 
 void TransactionModel::setHeaderTitle()
 {

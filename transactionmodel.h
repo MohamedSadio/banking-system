@@ -24,6 +24,10 @@ public:
     ~TransactionModel() {}
     QItemSelectionModel* getSelectionModel() { return selectionModel; }
     void create(Transaction transaction);
+    void updateStatut(Transaction transaction);
+    Transaction read(int id); // Modifier le type de retour à Transaction
+    Transaction readByBeneficiary(QString accountNumber);
+
     QList<Transaction> list();
 
     // Rafraîchit la collection et la tableView ...
@@ -32,6 +36,7 @@ public:
     void readAllVirement(int accountId);
     void setHeaderTitle();
     void readBy(int clientId);
+    bool rejeterTransaction(int idTransaction);
 };
 
 #endif // TRANSATIONMODEL_H
