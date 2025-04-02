@@ -13,9 +13,9 @@ UIInspectAccount::UIInspectAccount(QObject* controller):
 {
     ui->setupUi(this);
 
-    connect(ui->pushButtonAnnuler, SIGNAL(clicked()), controller, SLOT());
-    connect(ui->pushButtonRejeter, SIGNAL(clicked()), controller, SLOT());
-    connect(ui->pushButtonApprouver, SIGNAL(clicked()), controller, SLOT());
+    connect(ui->pushButtonAnnuler, SIGNAL(clicked()), controller, SLOT(onClose_UIInspectAccount()));
+    connect(ui->pushButtonRejeter, SIGNAL(clicked()), controller, SLOT(onRejeter_UIInspectAccount()));
+    connect(ui->pushButtonApprouver, SIGNAL(clicked()), controller, SLOT(onApprouver_UIInspectAccount()));
 }
 
 QString UIInspectAccount::getIdTransaction()
