@@ -34,7 +34,14 @@ public:
     void readAll();
 
     void readBy(int clientId);
+
+    Account readByAccountNumber(QString accountNumber);
+
     void setHeaderTitle();
+    bool gelerCompte(int accountId);
+
+    double getAccountBalance(const QString& accountNumber);
+    QString getAccountStatus(const QString& accountNumber);
 
     AccountModel();
 };

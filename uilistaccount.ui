@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>500</height>
+    <width>790</width>
+    <height>680</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>600</width>
-    <height>500</height>
+    <width>790</width>
+    <height>680</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>600</width>
-    <height>500</height>
+    <width>790</width>
+    <height>680</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>581</width>
+      <width>771</width>
       <height>37</height>
      </rect>
     </property>
@@ -81,8 +81,8 @@
      <rect>
       <x>10</x>
       <y>55</y>
-      <width>581</width>
-      <height>351</height>
+      <width>771</width>
+      <height>511</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayoutTableview">
@@ -99,12 +99,19 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>410</y>
-      <width>581</width>
+      <y>580</y>
+      <width>771</width>
       <height>41</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayoutButtons">
+     <item>
+      <widget class="QPushButton" name="pushButtonGeler">
+       <property name="text">
+        <string>Geler</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacerButtons">
        <property name="orientation">
@@ -154,8 +161,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
-     <height>26</height>
+     <width>790</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>

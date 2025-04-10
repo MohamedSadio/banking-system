@@ -36,7 +36,7 @@ public:
 
     // Rafraîchit la collection et la tableView ...
     void readAll();
-    void readAllClients();
+    void readAllClients(int idCreator);
     void readBy(int id);
     void readBy(QString str);
     User readBy(QString login, QString password);

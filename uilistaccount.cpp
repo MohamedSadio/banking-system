@@ -14,6 +14,7 @@ UIListAccount::UIListAccount(QObject* controller) :
     qDebug("Contruction/Initialisation de la fenêtre UIListAccount ...");
     ui->setupUi(this);
 
+    connect(ui->pushButtonGeler, SIGNAL(clicked()), controller, SLOT(onGeler_UIListAccount()));
     connect(ui->pushButtonNouveau, SIGNAL(clicked()), controller, SLOT(onNouveau_UIListAccount()));
     connect(ui->pushButtonModifier, SIGNAL(clicked()), controller, SLOT(onModifier_UIListAccount()));	
     connect(ui->pushButtonOuvrir, SIGNAL(clicked()), controller, SLOT(onOuvrir_UIListAccount()));

@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>350</height>
+    <width>630</width>
+    <height>439</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>480</width>
-    <height>350</height>
+    <width>630</width>
+    <height>390</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>480</width>
-    <height>350</height>
+    <width>16777215</width>
+    <height>16777215</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -29,38 +29,13 @@
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>30</x>
       <y>10</y>
-      <width>401</width>
-      <height>111</height>
+      <width>531</width>
+      <height>121</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="labelId">
-       <property name="minimumSize">
-        <size>
-         <width>60</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>60</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Identifiant :</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEditIdentifiant"/>
-     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="labelNom">
        <property name="minimumSize">
@@ -76,10 +51,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Nom :</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        <string>Nom :   </string>
        </property>
       </widget>
      </item>
@@ -101,10 +73,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Birthdate :</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        <string>Birthdate :   </string>
        </property>
       </widget>
      </item>
@@ -126,10 +95,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Country :</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        <string>Country :   </string>
        </property>
       </widget>
      </item>
@@ -172,42 +138,47 @@
        </item>
       </widget>
      </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineEditIdentifiant"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelId">
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Identifiant :   </string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::AutoText</enum>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>280</y>
-      <width>461</width>
-      <height>31</height>
+      <x>20</x>
+      <y>310</y>
+      <width>551</width>
+      <height>81</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="6">
-      <spacer name="horizontalSpacerRight">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
      <item row="0" column="3">
       <widget class="QPushButton" name="pushButtonUpdate">
        <property name="text">
         <string>Update</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="5">
-      <widget class="QPushButton" name="pushButtonClose">
-       <property name="text">
-        <string>Close</string>
        </property>
       </widget>
      </item>
@@ -232,10 +203,17 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <spacer name="horizontalSpacer">
+     <item row="0" column="5">
+      <widget class="QPushButton" name="pushButtonClose">
+       <property name="text">
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="6">
+      <spacer name="horizontalSpacerRight">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Vertical</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -245,15 +223,49 @@
        </property>
       </spacer>
      </item>
+     <item row="0" column="0">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="2">
+      <widget class="QPushButton" name="pushButtonSettings">
+       <property name="text">
+        <string>Settings</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QPushButton" name="pushButtonNotification">
+       <property name="text">
+        <string>Notification</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QPushButton" name="pushButtonMessage">
+       <property name="text">
+        <string>Message</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QWidget" name="formLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>130</y>
-      <width>401</width>
-      <height>51</height>
+      <x>30</x>
+      <y>140</y>
+      <width>531</width>
+      <height>61</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_credentials">
@@ -261,21 +273,18 @@
       <widget class="QLabel" name="labelLogin">
        <property name="minimumSize">
         <size>
-         <width>60</width>
+         <width>80</width>
          <height>20</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>60</width>
+         <width>80</width>
          <height>20</height>
         </size>
        </property>
        <property name="text">
         <string>Login :</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -297,17 +306,14 @@
         </size>
        </property>
        <property name="text">
-        <string>Password :</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        <string>Password :   </string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="lineEditPassword">
        <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
+        <enum>QLineEdit::Normal</enum>
        </property>
       </widget>
      </item>
@@ -316,10 +322,10 @@
    <widget class="QWidget" name="formLayoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>190</y>
-      <width>401</width>
-      <height>81</height>
+      <x>30</x>
+      <y>210</y>
+      <width>531</width>
+      <height>91</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
@@ -327,21 +333,18 @@
       <widget class="QLabel" name="labelRole">
        <property name="minimumSize">
         <size>
-         <width>60</width>
+         <width>80</width>
          <height>20</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>60</width>
+         <width>80</width>
          <height>20</height>
         </size>
        </property>
        <property name="text">
         <string>Rôle :</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -381,9 +384,6 @@
        <property name="text">
         <string>Email :</string>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
       </widget>
      </item>
      <item row="2" column="0">
@@ -403,9 +403,6 @@
        <property name="text">
         <string>Statut :</string>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
       </widget>
      </item>
      <item row="1" column="1">
@@ -415,17 +412,12 @@
       <widget class="QComboBox" name="comboBoxStatut">
        <item>
         <property name="text">
-         <string/>
+         <string>INACTIF</string>
         </property>
        </item>
        <item>
         <property name="text">
          <string>ACTIF</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>INACTIF</string>
         </property>
        </item>
       </widget>
@@ -438,7 +430,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>480</width>
+     <width>630</width>
      <height>21</height>
     </rect>
    </property>

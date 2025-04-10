@@ -20,9 +20,11 @@ public:
     void setTableViewModel(TransactionModel* transactionModel);
     void updateTitle(QString suite);
     void updateTitle(QString suite, QString TransactionTitle);
+    void hideButton();
+    void showButton();
+    void showEvent(QShowEvent *event);
     void top();
     ~UIListTransaction();
-
 
 private slots:
     // Nouveau slot pour gérer le clic sur l'en-tête
@@ -32,8 +34,8 @@ private:
     Ui::UIListTransaction *ui;
     QSortFilterProxyModel *proxyModel;
     TransactionModel *sourceModel;
-
-     int currentFilterColumn;
+    QObject *m_controller;
+    int currentFilterColumn;
 };
 
 #endif // UILISTTRANSACTION_H

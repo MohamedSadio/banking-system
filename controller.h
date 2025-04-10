@@ -15,6 +15,11 @@
 #include "uiclient.h"
 #include "uiaccount.h"
 #include "uinotif.h"
+#include "uilistvirement.h"
+#include "uiaddclient.h"
+#include "uiinspectaccount.h"
+#include "uisettings.h"
+#include "uiadminnotif.h"
 
 class Controller : public QObject
 {
@@ -31,21 +36,32 @@ private:
     UIListTransaction uiListTransaction {this};
     UIAccount uiAccount {this};
     UINotif uiNotif{this};
+    UIAddClient uiAddClient {this};
+    UiListVirement uiListVirement {this};
+    UIInspectAccount uiInspectAccount {this};
+    UISettings uiSettings {this};
+    UIAdminNotif uiAdminNotif {this};
 
     Role connectedUserType;
     User connectedUser;
+    User currentClient;
 
     UserModel* userModel = new UserModel;
     AccountModel* accountModel = new AccountModel;
     TransactionModel* transactionModel = new TransactionModel;
     NotifModele* notifModel = new NotifModele;
+    AdminNotifModel* adminNotifModel = new AdminNotifModel;
+    SettingsModel* settingsModel = new SettingsModel;
 
-    Service service {userModel, accountModel, transactionModel ,notifModel}; // Le classe service pour déclencher les fonctionnalités
+    Service service {userModel, accountModel, transactionModel, settingsModel, adminNotifModel, notifModel}; // Le classe service pour déclencher les fonctionnalités
 
 public:
     explicit Controller(QObject* parent = nullptr);
     ~Controller();
     void execute();
+    void executeClientList();
+    void reloadTransactions();
+    void reloadAccounts();
 
 private slots:
     /* Les slots de la fenêtre UIListUser
@@ -64,6 +80,16 @@ private slots:
     void onUpdate_UIUser();
     void onList_UIUser();
     void onClose_UIUser();
+    void onSettings_UIUser();
+    void onNotifs_UIUser();
+    void onMessages_UIUser();
+
+    /*
+     * Les slots de la fenetre UIAddCLient
+     */
+    void onCreate_UIAddClient();
+    void onClose_UIAddClient();
+
 
     /*
      * Les slots de la fenêtre UILoginIn
@@ -88,6 +114,7 @@ private slots:
      * Les slots de la fenêtre UIListClient
      */
     void onClose_UIListClient();
+    void onCreate_UIListClient();
     void onOuvrir_UIListClient();
 
     /*
@@ -97,11 +124,27 @@ private slots:
     void onModifier_UIListAccount();
     void onOuvrir_UIListAccount();
     void onClose_UIListAccount();
+    void onGeler_UIListAccount();
 
     /*
      * Les slots de la fenêtre UIListTransaction
      */
     void onClose_UIListTransaction();
+    void onGoing_UIListTransaction();
+    void roleButton_UIListTransaction();
+
+    /*
+     * Les slots de la fenêtre UIListVirement
+     */
+    void onClose_UIListVirement();
+    void onInspecter_UIListVirement();
+
+    /*
+     * Les slots de la fenêtre UIInspectAccount
+     */
+    void onClose_UIInspectAccount();
+    void onApprouver_UIInspectAccount();
+    void onRejeter_UIInspectAccount();
 
     /*
      * Les slots de la fenêtre UIAccount
@@ -114,6 +157,17 @@ private slots:
      * Les slots de la fenêtre UINotif
      */
     void onClose_UINotif();
+
+    /*
+     * Les slots de la fenêtre UISettings
+     */
+    void onSave_UISettings();
+    void onQuit_UISettings();
+
+    /*
+     * Les slots de la fenêtre UIAdminNotif
+     */
+    void onQuit_UIAdminNotif();
 };
 #endif // CONTROLLER_H
 

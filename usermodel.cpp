@@ -1,4 +1,5 @@
 #include "usermodel.h"
+#include <QSqlError>
 
 UserModel::UserModel()
 {    
@@ -12,8 +13,8 @@ void UserModel::create(User user)
     QSqlQuery query(dbManager->database());
 
     query.prepare("INSERT INTO t_users "
-                  "(nom, login, password, country, birthdate, email, role, statut) VALUES "
-                  "(:nom, :login, :password, :country, :birthdate, :email, :role, :statut)");
+                  "(nom, login, password, country, birthdate, email, role, statut, create_by) VALUES "
+                  "(:nom, :login, :password, :country, :birthdate, :email, :role, :statut, :create_by)");
 
     query.bindValue(":nom", user.getNom());
     query.bindValue(":login", user.getLogin());
@@ -22,7 +23,8 @@ void UserModel::create(User user)
     query.bindValue(":birthdate", user.getBirthdate());
     query.bindValue(":email", user.getEmail());
     query.bindValue(":role", user.getRole());
-    query.bindValue(":statut", user.getStatut().compare("") == 0 ? "NULL" : user.getStatut());
+    query.bindValue(":statut", user.getStatut().compare("") == 0 ? "ACTIF" : user.getStatut());
+    query.bindValue(":create_by", user.getIdCreator());
 
     query.exec();
     dbManager->close();
@@ -181,14 +183,24 @@ void UserModel::readAll()
     dbManager->close();
 }
 
-void UserModel::readAllClients()
+void UserModel::readAllClients(int idCreator)
 {
     dbManager->open();
 
-    QSqlDatabase database = dbManager->database();
+    QSqlQuery query(dbManager->database());
 
-    this->setQuery("SELECT id, nom, country, birthdate, "
-                   "email, statut FROM t_users where role=\"CLIENT\"", database);
+    query.prepare("SELECT id, nom, country, birthdate, email, statut "
+                  "FROM t_users where role=\"CLIENT\" AND create_by=:create_by");
+    query.bindValue(":create_by",idCreator);
+
+    if (!query.exec()) {
+        qDebug() << "Error executing query: " << query.lastError().text();
+        dbManager->close();
+        return;
+    }
+
+    this->setQuery(std::move(query));
+
     setClientHeaderTitle();
 
     dbManager->close();
@@ -215,7 +227,7 @@ User UserModel::readBy(QString login, QString password)
     dbManager->open();
     QSqlQuery query(dbManager->database());
 
-    query.prepare("SELECT * FROM t_users WHERE login=:login AND password=:password");
+    query.prepare("SELECT * FROM t_users WHERE login=:login AND password=:password AND statut != 'INACTIF'");
 
     qDebug () << "UserModel::readBy::login : " << login;
     qDebug () << "UserModel::readBy::password : " << password;
@@ -271,7 +283,7 @@ void UserModel::readBy(QString str)
 void UserModel::setHeaderTitle()
 {
     this->setHeaderData(0, Qt::Horizontal, tr("Identifiant"));
-    this->setHeaderData(1, Qt::Horizontal, tr("Nom"));    
+    this->setHeaderData(1, Qt::Horizontal, tr("Nom"));
     this->setHeaderData(2, Qt::Horizontal, tr("Country"));
     this->setHeaderData(3, Qt::Horizontal, tr("Birthdate"));
     this->setHeaderData(4, Qt::Horizontal, tr("Login"));
@@ -279,6 +291,7 @@ void UserModel::setHeaderTitle()
     this->setHeaderData(6, Qt::Horizontal, tr("Email"));
     this->setHeaderData(7, Qt::Horizontal, tr("Role"));
     this->setHeaderData(8, Qt::Horizontal, tr("Statut"));
+    this->setHeaderData(9, Qt::Horizontal, tr("Cree Par"));
 }
 
 void UserModel::setClientHeaderTitle()

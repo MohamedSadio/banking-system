@@ -12,9 +12,19 @@ Service::Service(UserModel* _userModel, AccountModel* _accountModel) :
 Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel) :
     userModel(_userModel), accountModel(_accountModel), transactionModel (_transactionModel) {}
 
-Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel,NotifModele* _notifModel) :
-    userModel(_userModel), accountModel(_accountModel), transactionModel (_transactionModel), notifModele(_notifModel) {}
+Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel, SettingsModel* _settingsModel) :
+    userModel(_userModel), accountModel(_accountModel), transactionModel (_transactionModel), settingsModel(_settingsModel) {}
 
+Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel, SettingsModel* _settingsModel, AdminNotifModel* _adminNotifModel, NotifModele* _notifModele) :
+    userModel(_userModel), accountModel(_accountModel), transactionModel (_transactionModel),
+    notifModele(_notifModele), settingsModel(_settingsModel), adminNotifModel(_adminNotifModel) {}
+
+Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel,
+                 SettingsModel* _settingsModel, AdminNotifModel* _adminNotifModel, NotifModele* _notifModele,
+                 MessageModel* _messageModel) :
+    userModel(_userModel), accountModel(_accountModel), transactionModel(_transactionModel),
+    notifModele(_notifModele), settingsModel(_settingsModel), adminNotifModel(_adminNotifModel),
+    messageModel(_messageModel) {}
 
 Role Service::authentifier(QString login, QString password)
 {
@@ -34,6 +44,13 @@ bool Service::authentifier(QString login, QString password, User& user)
 void Service::ajouterUnUser(QString nom, QString login, QString password, QString country, QString birthdate, QString email, QString role, QString statut)
 {
     User user(nom, login, password, country, birthdate, email, role, statut);
+    userModel->create(user);
+}
+
+void Service::ajouterUnClient(QString nom, QString login, QString password, QString country, QString birthdate, QString email, QString statut, int idCreator)
+{
+    QString role = "CLIENT";
+    User user(nom, login, password, country, birthdate, email, role, statut, idCreator);
     userModel->create(user);
 }
 
@@ -76,10 +93,10 @@ void Service::listerLesUsers()
     userModel->readAll();
 }
 
-void Service::listerLesClients()
+void Service::listerLesClients(int id)
 {
     userModel->getSelectionModel()->reset();
-    userModel->readAllClients();
+    userModel->readAllClients(id);
 }
 
 void Service::listerLesComptes(int clientId)
@@ -105,7 +122,6 @@ void Service::listerLesNotification(int clientId){
     notifModele->readBy(clientId);
 }
 
-
 void Service::listerLesTransactionsDuCompte()
 {
     QModelIndex selectedIndex = accountModel->getSelectionModel()->currentIndex();
@@ -116,6 +132,26 @@ void Service::listerLesTransactionsDuCompte()
 
     transactionModel->getSelectionModel()->reset();
     transactionModel->readAll(accountId);
+}
+
+void Service::listerLesTransactionsDuCompteSpecifique(int accountId)
+{
+    transactionModel->getSelectionModel()->reset();
+    transactionModel->readAll(accountId);
+}
+
+double Service::getAccountBalance(const QString& accountNumber) {
+    return accountModel->getAccountBalance(accountNumber);
+}
+
+QString Service::getAccountStatus(const QString& accountNumber) {
+    return accountModel->getAccountStatus(accountNumber);
+}
+
+void Service::listerLesVirementDuCompte(int accountId)
+{
+    transactionModel->getSelectionModel()->reset();
+    transactionModel->readAllVirement(accountId);
 }
 
 bool Service::effectuerUnRetrait(int idClient, double montant)
@@ -139,7 +175,7 @@ bool Service::effectuerUnRetrait(int idClient, double montant)
     accountModel->update(account);
     accountModel->readBy(idClient);
 
-    Transaction transaction ("Retrait", idClient, accountId, -1, account.getNumber(), "NULL", montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "Completed");
+    Transaction transaction ("RETRAIT", idClient, accountId, -1, account.getNumber(), "NULL", montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "Completed");
     transactionModel->create(transaction);
     if (!notifModele) {  // Si vous utilisez ce pointeur ailleurs
         qCritical("notifModele est null !");
@@ -167,7 +203,7 @@ void Service::effectuerUnVersement(int idClient, double montant)
     accountModel->update(account);
     accountModel->readBy(idClient);
 
-    Transaction transaction ("Versement", idClient, -1, accountId, "NULL", account.getNumber(), montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "Completed");
+    Transaction transaction ("VERSEMENT", idClient, -1, accountId, "NULL", account.getNumber(), montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "Completed");
     transactionModel->create(transaction);
     Notif notif(idClient,account.getNumber(),"Votre operation de Versement sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
     notifModele->create(notif);
@@ -185,7 +221,7 @@ void Service::effectuerUnVirement (int idClient, QString numeroCompteBeneficiair
     QDate today = QDate::currentDate();
     QTime now = QTime::currentTime();
 
-    Transaction transaction ("Virement", idClient, accountId, -1, account.getNumber(), numeroCompteBeneficiaire, montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "In progress");
+    Transaction transaction ("VIREMENT", idClient, accountId, -1, account.getNumber(), numeroCompteBeneficiaire, montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "Waiting");
     transactionModel->create(transaction);
     Notif notif(idClient,account.getNumber(),"Votre operation de Virement sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
     notifModele->create(notif);
@@ -198,10 +234,19 @@ void Service::executeTransaction(QMap<QString, QString> input, bool &status, QSt
     QString montant = input.value("montant");
     QString numeroBeneficiaire = input.value("numeroBeneficiaire");
 
+    int amountValue = montant.toInt();
+
+    if (!isTransactionAmountValid(amountValue)) {
+       status = false;
+       message = "**ERR** Le montant de la transaction n'est pas valide. Veuillez respecter les limites configurées.";
+       return;
+    }
+
     if (typeTransaction.compare("VERSEMENT") == 0)
     {
         effectuerUnVersement(connectedUserId.toInt(), montant.toDouble());
         message = "Versement effectué avec succès.";
+        status = true;
     }
     else if (typeTransaction.compare("RETRAIT") == 0)
     {
@@ -214,11 +259,71 @@ void Service::executeTransaction(QMap<QString, QString> input, bool &status, QSt
         qDebug () << typeTransaction << "- Service::executeTransaction";
         effectuerUnVirement(connectedUserId.toInt(), numeroBeneficiaire, montant.toDouble());
         message = "Le virement a été enrégistré et est en cours de traitement ... vous recevrez une notification.";
+        status = true;
     }
     else
     {
         qDebug () << "typeTransaction " << typeTransaction << " - aucune transaction elligible - Service::executeTransaction";
+        status = false;
+        message = "**ERR** Type de transaction non reconnu.";
     }
+}
+
+void Service::approuverVirement(QString numeroCompteTire, QString numeroCompteBeneficiaire, double montant)
+{
+    // Récupérer les informations des comptes à partir des numéros de compte
+    Account compteTire = accountModel->readByAccountNumber(numeroCompteTire);
+    Account compteBeneficiaire = accountModel->readByAccountNumber(numeroCompteBeneficiaire);
+
+    // Vérifier si les comptes existent
+    if (compteTire.getId() == -1 || compteBeneficiaire.getId() == -1) {
+        qDebug() << "Erreur: Comptes introuvables.";
+        return; // Sortir de la fonction si les comptes n'existent pas
+    }
+
+    // Vérifier si le solde du compte émetteur est suffisant
+    if (compteTire.getBalance() < montant) {
+        qDebug() << "Erreur: Solde insuffisant.";
+        return; // Sortir de la fonction si le solde est insuffisant
+    }
+
+    // Effectuer le retrait sur le compte émetteur
+    compteTire.setBalance(compteTire.getBalance() - montant);
+    accountModel->update(compteTire);
+
+    // Effectuer le versement sur le compte bénéficiaire
+    compteBeneficiaire.setBalance(compteBeneficiaire.getBalance() + montant);
+    accountModel->update(compteBeneficiaire);
+
+    // Mettre à jour le statut de la transaction à "Completed"
+    Transaction transaction = transactionModel->readByBeneficiary(numeroCompteBeneficiaire);
+    transaction.setStatut("Completed");
+    transactionModel->updateStatut(transaction);
+
+    // Créer une transaction pour le bénéficiaire
+    Transaction transactionBeneficiaire;
+    transactionBeneficiaire.setType("VERSEMENT");
+    transactionBeneficiaire.setIdClient(compteBeneficiaire.getIdClient());
+    transactionBeneficiaire.setIdCompteTire(-1);
+    transactionBeneficiaire.setIdCompteBeneficiaire(compteBeneficiaire.getId()); // Pas de compte bénéficiaire pour un versement
+    transactionBeneficiaire.setNumeroCompteBeneficiaire(numeroCompteBeneficiaire);
+    transactionBeneficiaire.setNumeroCompteTire(numeroCompteTire);
+    transactionBeneficiaire.setMontant(montant);
+    transactionBeneficiaire.setDate(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss.zzz"));
+    transactionBeneficiaire.setStatut("Completed");
+
+    transactionModel->create(transactionBeneficiaire);
+
+    //Créer une notification pour l'utilisateur
+//    QDate today = QDate::currentDate();
+//    QTime now = QTime::currentTime();
+//    Notif notif(idClient, compteTire.getId(), "Votre virement a été approuvé.", "Le virement de " + QString::number(montant) + " vers le compte " + numeroCompteBeneficiaire + " a été effectué avec succès.", today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
+//    notifModele->create(notif);
+}
+
+bool Service::rejeterVirement(int idTransaction)
+{
+        return transactionModel->rejeterTransaction(idTransaction);
 }
 
 void Service::ajouterUnCompte(QMap<QString, QString> input)
@@ -227,13 +332,19 @@ void Service::ajouterUnCompte(QMap<QString, QString> input)
     QString number = input.value("number");
     QString type = input.value("type");
     QString balance = input.value("balance");
+    QString statut = input.value("statut");
 
-    Account account(idClient.toInt(), number, type, balance.toDouble());
+    bool ok;
+    double balanceValue = balance.toDouble(&ok);
+    if (!ok) {
+        qDebug() << "Erreur de conversion de balance.";
+        return; // ou gérer l'erreur d'une autre manière
+    }
+
+    Account account(idClient.toInt(), number, type, balanceValue, statut);
     accountModel->create(account);
-
-    listerLesComptes(idClient.toInt());
+    //listerLesComptes(idClient.toInt()); // Supprimé, car readAll est déjà appelé
 }
-
 
 void Service::modifierUnCompte(QMap<QString, QString> input)
 {
@@ -242,9 +353,90 @@ void Service::modifierUnCompte(QMap<QString, QString> input)
     QString number = input.value("number");
     QString balance = input.value("balance");
     QString type = input.value("type");
+    QString statut = input.value("statut");
 
-    Account account(accountId.toInt(), idClient.toInt(), number, type, balance.toInt());
+    bool ok;
+    double balanceValue = balance.toDouble(&ok);
+    if (!ok) {
+        qDebug() << "Erreur de conversion de balance.";
+        return; // ou gérer l'erreur d'une autre manière
+    }
+
+    Account account(accountId.toInt(), idClient.toInt(), number, type, balanceValue, statut);
     accountModel->update(account);
+    //listerLesComptes(idClient.toInt()); // Supprimé, car readAll est déjà appelé
+}
 
-    listerLesComptes(idClient.toInt());
+bool Service::gelerCompte(int accountId)
+{
+    return accountModel->gelerCompte(accountId);
+}
+
+bool Service::updateSystemSettings(int transactionLimit, int minAmount, int maxAmount, bool notificationsEnabled)
+{
+    return settingsModel->updateSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+}
+
+bool Service::loadSystemSettings(int &transactionLimit, int &minAmount, int &maxAmount, bool &notificationsEnabled)
+{
+    return settingsModel->loadSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+}
+
+bool Service::areNotificationsEnabled()
+{
+    int transactionLimit, minAmount, maxAmount;
+    bool notificationsEnabled;
+    settingsModel->loadSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+    return notificationsEnabled;
+}
+
+bool Service::isTransactionAmountValid(int amount)
+{
+    int transactionLimit, minAmount, maxAmount;
+    bool notificationsEnabled;
+    settingsModel->loadSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+
+    // Vérifier si le montant est valide
+    return (amount >= minAmount && amount <= maxAmount && amount <= transactionLimit);
+}
+
+bool Service::envoyerMessage(int expediteurId, int destinataireId, QString objet, QString contenu) {
+    Message message(expediteurId, destinataireId, objet, contenu);
+    return messageModel->create(message);
+}
+
+void Service::listerMessagesRecus(int userId) {
+    messageModel->getSelectionModel()->reset();
+    messageModel->readAllReceivedMessages(userId);
+}
+
+void Service::listerMessagesEnvoyes(int userId) {
+    messageModel->getSelectionModel()->reset();
+    messageModel->readAllSentMessages(userId);
+}
+
+Message Service::lireMessage(int messageId) {
+    Message message = messageModel->read(messageId);
+    if (message.getId() != -1 && !message.getIsRead()) {
+        messageModel->markAsRead(messageId);
+    }
+    return message;
+}
+
+bool Service::marquerMessageCommeLu(int messageId, bool lu) {
+    Message message = messageModel->read(messageId);
+    if (message.getId() != -1) {
+        message.setIsRead(lu);
+        return messageModel->update(message);
+    }
+    return false;
+}
+
+
+int Service::getNombreMessagesNonLus(int userId) {
+    return messageModel->getUnreadMessageCount(userId);
+}
+
+QList<User> Service::listerUtilisateursPourMessage() {
+    return userModel->list();
 }

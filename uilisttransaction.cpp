@@ -11,11 +11,14 @@ UIListTransaction::UIListTransaction(QWidget *parent) :
 }
 
 UIListTransaction::UIListTransaction(QObject* controller) :
-    ui(new Ui::UIListTransaction)
+    ui(new Ui::UIListTransaction),
+    m_controller(controller)
+
 {
     qDebug("Contruction/Initialisation de la fenêtre UIListTransaction ...");
     ui->setupUi(this);
     
+    connect(ui->pushButtonOnGoing, SIGNAL(clicked()), controller, SLOT(onGoing_UIListTransaction()));
 	connect(ui->pushButtonClose, SIGNAL(clicked()), controller, SLOT(onClose_UIListTransaction()));
 }
 
@@ -82,6 +85,23 @@ void UIListTransaction::updateTitle(QString suite, QString transactionTitle)
 {
     updateTitle(suite);
     ui->labelTitle->setText(transactionTitle);
+}
+
+void UIListTransaction::hideButton()
+{
+    ui->pushButtonOnGoing->hide();
+}
+
+void UIListTransaction::showButton()
+{
+    ui->pushButtonOnGoing->show();
+}
+
+void UIListTransaction::showEvent(QShowEvent *event) {
+    QWidget::showEvent(event);
+    if (m_controller) {
+        QMetaObject::invokeMethod(m_controller, "roleButton_UIListTransaction");
+    }
 }
 
 UIListTransaction::~UIListTransaction()

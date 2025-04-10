@@ -11,6 +11,49 @@ void Controller::execute()
     uiLoginIn.show();
 }
 
+void Controller::executeClientList()
+{
+    uiListAccount.setTableViewModel(accountModel);
+    uiListClient.setTableViewModel(userModel);
+    service.listerLesClients(connectedUser.getId());
+    uiListClient.show();
+    uiListClient.updateTitle (connectedUser.getNom());
+    uiListClient.top();
+}
+
+void Controller::reloadTransactions()
+{
+    // Récupérer l'ID du compte sélectionné
+    QModelIndex index = accountModel->getSelectionModel()->currentIndex();
+    int selectedAccountLine = index.row();
+    QSqlRecord selectedAccountRecord = accountModel->record(selectedAccountLine);
+    QSqlField accountField = selectedAccountRecord.field(0);
+    int accountId = accountField.value().toInt();
+
+    // Appeler le service pour récupérer les transactions
+    service.listerLesTransactionsDuCompteSpecifique(accountId);
+
+    // Mettre à jour le modèle de données de uiListTransaction
+    uiListTransaction.setTableViewModel(transactionModel);
+}
+
+// Optionnel: Fonction pour recharger la liste des comptes
+void Controller::reloadAccounts() {
+
+    QModelIndex userIndex = userModel->getSelectionModel()->currentIndex();
+    int selectedUserLine = userIndex.row();
+    QSqlRecord selectedUserRecord = userModel->record(selectedUserLine);
+    QSqlField userField = selectedUserRecord.field(0);
+    int clientId = userField.value().toInt();
+
+    service.listerLesComptes(clientId);
+    uiListAccount.setTableViewModel(accountModel);
+    uiListAccount.top();
+}
+
+/* Les slots de la fenêtre UILogin
+ *
+ */
 void Controller::onSubmit_UILoginIn()
 {
     QString login = uiLoginIn.getLogin();
@@ -44,12 +87,13 @@ void Controller::onSubmit_UILoginIn()
             break;
 
             case GESTIONNAIRE:
-                uiListAccount.setTableViewModel(accountModel);
-                uiListClient.setTableViewModel(userModel);
-                uiListClient.show();
-                service.listerLesClients();
-                uiListClient.updateTitle (connectedUser.getNom());
-                uiListClient.top();
+//                uiListAccount.setTableViewModel(accountModel);
+//                uiListClient.setTableViewModel(userModel);
+//                uiListClient.show();
+//                service.listerLesClients();
+//                uiListClient.updateTitle (connectedUser.getNom());
+//                uiListClient.top();
+                executeClientList();
 
             break;
 
@@ -234,7 +278,7 @@ void Controller::onUpdate_UIUser()
     if (nom.isEmpty() || login.isEmpty())
     {
         uiUser.warning("Mise a jour d'une User",
-                            "Veuillez renseigner tous les champs svp.");
+                       "Veuillez renseigner tous les champs svp.");
     }
     else
     {
@@ -287,8 +331,59 @@ void Controller::onComboBoxRoleChanged_UIUser()
     }
 }
 
+void Controller::onSettings_UIUser()
+{
+    uiUser.hide();
+    uiSettings.show();
+}
+
+void Controller::onNotifs_UIUser()
+{
+    uiUser.hide();
+    uiAdminNotif.show();
+}
+
+void Controller::onMessages_UIUser() {}
+
 /*
- * Les slots de la fenêtre UIClient
+ * Les slots de la fenetre UIAddCLient
+ */
+void Controller::onCreate_UIAddClient()
+{
+    qDebug("Enter the function onCreate_UIAddClient.");
+
+    QString nom = uiAddClient.getNom();
+    QString login = uiAddClient.getLogin();
+
+    if (nom.isEmpty() || login.isEmpty())
+    {
+
+        uiAddClient.warning("Ajout d'une nouvelle User",
+                            "Veuillez renseigner tous les champs svp.");
+    }
+    else
+    {
+        QString password = uiAddClient.getPassword();
+        QString country = uiAddClient.getCountry();
+        QString birthdate = uiAddClient.getBirthdate();
+        QString email = uiAddClient.getEmail();
+        QString statut = uiAddClient.getStatut();
+        int idCreator = connectedUser.getId();
+
+        service.ajouterUnClient (nom, login, password, country, birthdate, email, statut, idCreator);
+        uiAddClient.reinit();
+    }
+}
+
+void Controller::onClose_UIAddClient()
+{
+    uiAddClient.close();
+    executeClientList();
+}
+
+
+/*
+ * Les slots de la fenêtre UINotif
  */
 void Controller::onClose_UINotif(){
     uiNotif.hide();
@@ -312,7 +407,7 @@ void Controller::onOuvrir_UIClient()
     if (index.isValid() == false)
     {
         uiClient.warning("Ouverture de vos comptes",
-                              "Veuillez selectionner un de vos comptes svp ...");
+                         "Veuillez selectionner un de vos comptes svp ...");
     }
     else
     {
@@ -330,7 +425,7 @@ void Controller::onVirement_UIClient()
     if (index.isValid() == false)
     {
         uiClient.warning("Opération de virement",
-                              "Veuillez selectionner un de vos comptes svp ...");
+                         "Veuillez selectionner un de vos comptes svp ...");
     }
     else
     {
@@ -345,7 +440,7 @@ void Controller::onRetrait_UIClient()
     if (index.isValid() == false)
     {
         uiClient.warning("Opération de retrait",
-                              "Veuillez selectionner un de vos comptes svp ...");
+                         "Veuillez selectionner un de vos comptes svp ...");
     }
     else
     {
@@ -360,7 +455,7 @@ void Controller::onVersement_UIClient()
     if (index.isValid() == false)
     {
         uiClient.warning("Opération de depôt",
-                              "Veuillez selectionner un de vos comptes svp ...");
+                         "Veuillez selectionner un de vos comptes svp ...");
     }
     else
     {
@@ -423,14 +518,12 @@ void Controller::onOK_UIClient()
 
     if (ok)
     {        
-        // -
         QString transaction_message;
         bool status {true};
         qDebug () << typeTransaction << "- Controller::onOK_UIClient";
         service.executeTransaction(input, status, transaction_message);
         if (status == true)
         {
-            // -
             uiClient.hideTransactionForm();
             uiClient.information("Fin de la transation", transaction_message);
         }
@@ -463,7 +556,7 @@ void Controller::onOuvrir_UIListClient()
     if (index.isValid() == false)
     {
         uiListUser.warning("Mise a jour des informations d'une User",
-                              "Veuillez selectionner une ligne svp ...");
+                           "Veuillez selectionner une ligne svp ...");
     }
     else
     {
@@ -471,18 +564,40 @@ void Controller::onOuvrir_UIListClient()
         // -
         int selectedLine = index.row();
         QSqlRecord selectedRecord = userModel->record(selectedLine);
-        QSqlField field = selectedRecord.field(0);
-        int clientId = field.value().toInt();
 
-        field = selectedRecord.field(1);
-        QString nomClient = field.value().toString();
+        // Récupération des informations du client sélectionné
+        currentClient.setId(selectedRecord.field(0).value().toInt());
+        currentClient.setNom(selectedRecord.field(1).value().toString());
+        currentClient.setCountry(selectedRecord.field(2).value().toString());
+        currentClient.setBirthdate(selectedRecord.field(3).value().toString());
+        currentClient.setLogin(selectedRecord.field(4).value().toString());
+        currentClient.setPassword(selectedRecord.field(5).value().toString());
+        currentClient.setEmail(selectedRecord.field(6).value().toString());
+        currentClient.setRole(selectedRecord.field(7).value().toString());
+        currentClient.setStatut(selectedRecord.field(8).value().toString());
+
+        uiListAccount.show();
+        uiListAccount.updateTitle(connectedUser.getNom());
+        uiListAccount.updateAccountTitle(currentClient.getNom()); // Utilisation de currentClient
+        service.listerLesComptes(currentClient.getId()); // Utilisation de currentClient
+        uiListAccount.top();
+
 
         uiListAccount.show();
         uiListAccount.updateTitle (connectedUser.getNom());
-        uiListAccount.updateAccountTitle(nomClient);
-        service.listerLesComptes(clientId);
+        uiListAccount.updateAccountTitle(currentClient.getNom());
+        service.listerLesComptes(currentClient.getId());
         uiListAccount.top();
     }
+}
+
+void Controller::onCreate_UIListClient()
+{
+    uiListClient.close();
+    uiAddClient.setIdEditableFalse();
+    uiAddClient.show();
+    uiAddClient.reinit();
+    uiAddClient.updateTitle (connectedUser.getNom());
 }
 
 /*
@@ -503,7 +618,7 @@ void Controller::onNouveau_UIListAccount()
     uiAccount.updateTitle (nomClient);
     uiListAccount.hide();
     uiAccount.show();
-    uiAccount.populate("-1", QString::number(idClient), "", "COURANT", "0");
+    uiAccount.populate("-1", QString::number(idClient), "", "COURANT", "0", "ACTIF");
 
     uiAccount.deactivateUpdate();
 }
@@ -511,7 +626,7 @@ void Controller::onNouveau_UIListAccount()
 void Controller::onModifier_UIListAccount()
 {
     QModelIndex userIndex = userModel->getSelectionModel()->currentIndex();
-    // -
+
     int selectedUserLine = userIndex.row();
     QSqlRecord selectedUserRecord = userModel->record(selectedUserLine);
     QSqlField userField = selectedUserRecord.field(0);
@@ -535,10 +650,13 @@ void Controller::onModifier_UIListAccount()
     accountField = selectedAccountRecord.field(4);
     QString balance = accountField.value().toString();
 
+    accountField = selectedAccountRecord.field(5);
+    QString statut = accountField.value().toString();
+
     uiAccount.updateTitle (nomClient);
     uiListAccount.hide();
     uiAccount.show();
-    uiAccount.populate(accountId, idClient, number, type, balance);
+    uiAccount.populate(accountId, idClient, number, type, balance, statut);
 
     uiAccount.deactivateCreate();
 }
@@ -549,7 +667,7 @@ void Controller::onOuvrir_UIListAccount()
     if (index.isValid() == false)
     {
         uiClient.warning("Ouverture de vos comptes",
-                              "Veuillez selectionner un de vos comptes svp ...");
+                         "Veuillez selectionner un de vos comptes svp ...");
     }
     else
     {
@@ -562,14 +680,14 @@ void Controller::onOuvrir_UIListAccount()
         // -
         int selectedUserLine = userIndex.row();
         QSqlRecord selectedUserRecord = userModel->record(selectedUserLine);
-        QSqlField userField = selectedUserRecord.field(1);
-        QString nomClient = userField.value().toString();
 
         int selectedAccountLine = index.row();
         QSqlRecord selectedAccountRecord = accountModel->record(selectedAccountLine);
+
         QSqlField accountField = selectedAccountRecord.field(2);
         QString accountNumber = accountField.value().toString();
-        uiListTransaction.updateTitle(nomClient, "Les transactions effectuées sur le compte : " + accountNumber);
+//        uiListTransaction.updateTitle(nomClient, "Les transactions effectuées sur le compte : " + accountNumber);
+        uiListTransaction.updateTitle(currentClient.getNom(), "Les transactions effectuées sur le compte : " + accountNumber);
 
         uiListTransaction.top();
     }
@@ -581,13 +699,171 @@ void Controller::onClose_UIListAccount()
     uiListClient.show();
 }
 
+void Controller::onGeler_UIListAccount()
+{
+    QModelIndex accountIndex = accountModel->getSelectionModel()->currentIndex();
+
+    if (!accountIndex.isValid()) {
+        // Aucun compte sélectionné
+        uiListAccount.warning("Gel du compte", "Veuillez sélectionner un compte.");
+        return;
+    }
+
+    // Récupérer l'ID du compte sélectionné
+    int selectedAccountLine = accountIndex.row();
+    QSqlRecord selectedAccountRecord = accountModel->record(selectedAccountLine);
+    QSqlField accountField = selectedAccountRecord.field(0);
+    int accountId = accountField.value().toInt();
+
+    // Appeler le service pour geler le compte
+    bool gelerSuccess = service.gelerCompte(accountId);
+
+    if (gelerSuccess) {
+        uiListAccount.information("Gel du compte", "Le compte a été gelé avec succès.");
+        reloadAccounts();
+    } else {
+        uiListAccount.critical("Gel du compte", "Une erreur s'est produite lors du gel du compte.");
+    }
+}
+
+/*
+ * Les slots de la fenêtre UIListTransaction
+ */
 void Controller::onClose_UIListTransaction()
 {
-    uiListTransaction.hide();
+    uiListTransaction.close();
     if (connectedUser.getRole().compare("CLIENT") == 0)
         uiClient.show();
     else if (connectedUser.getRole().compare("GESTIONNAIRE") == 0)
         uiListAccount.show();
+}
+
+void Controller::onGoing_UIListTransaction()
+{
+    uiListTransaction.close();
+    uiListVirement.setTableViewModel(transactionModel);
+    uiListVirement.show();
+
+    //Recuperation de l'idCompte
+    QModelIndex index = accountModel->getSelectionModel()->currentIndex();
+    int selectedAccountLine = index.row();
+    QSqlRecord selectedAccountRecord = accountModel->record(selectedAccountLine);
+    QSqlField accountField = selectedAccountRecord.field(0);
+    int accountId = accountField.value().toInt();
+
+    service.listerLesVirementDuCompte(accountId);
+    uiListVirement.updateTitle(currentClient.getNom());
+    uiListVirement.top();
+}
+
+void Controller::roleButton_UIListTransaction()
+{
+    QString role = connectedUser.getRole();
+    if (role.compare("GESTIONNAIRE") == 0)
+    {
+        uiListTransaction.showButton();
+    }
+    else
+    {
+        uiListTransaction.hideButton();
+    }
+}
+
+/*
+ * Les slots de la fenêtre UIListVirement
+ */
+void Controller::onClose_UIListVirement()
+{
+    uiListVirement.close();
+    uiListTransaction.show();
+    reloadTransactions();
+}
+
+void Controller::onInspecter_UIListVirement()
+{
+    QModelIndex index = accountModel->getSelectionModel()->currentIndex();
+
+    if (!index.isValid()) {
+        uiListVirement.warning("Inspection du virement", "Veuillez sélectionner un virement.");
+        return;
+    }
+
+    int selectedRow = index.row();
+    QSqlRecord selectedRecord = transactionModel->record(selectedRow);
+
+    // Récupérer les informations du virement à partir du modèle
+    int idTransaction = selectedRecord.field("id").value().toInt();
+    QString type = selectedRecord.field("type").value().toString();
+    QString date = selectedRecord.field("date").value().toString();
+    QString statutTransac = selectedRecord.field("statut").value().toString();
+    QString compteTire = selectedRecord.field("numeroCompteTire").value().toString();
+    QString compteBeneficiaire = selectedRecord.field("numeroCompteBeneficiaire").value().toString();
+    double montant = selectedRecord.field("montant").value().toDouble();
+
+    // Récupérer les informations des comptes (solde et statut)
+    double soldeTire = service.getAccountBalance(compteTire);
+    QString statutTire = service.getAccountStatus(compteTire);
+    double soldeBeneficiaire = service.getAccountBalance(compteBeneficiaire);
+    QString statutBeneficiaire = service.getAccountStatus(compteBeneficiaire);
+
+    // Remplir l'interface UIInspectAccount avec les informations
+    uiInspectAccount.reinit();
+    uiInspectAccount.populateInfoVirement(QString::number(idTransaction), type, date, statutTransac, compteTire, compteBeneficiaire, QString::number(montant));
+    uiInspectAccount.populateInfoComp(compteTire, QString::number(soldeTire), statutTire, compteBeneficiaire, QString::number(soldeBeneficiaire), statutBeneficiaire);
+
+    // Afficher l'interface UIInspectAccount
+    uiListVirement.close();
+    uiInspectAccount.show();
+
+//    currentVirementId = idTransaction; // Stocke l'ID pour les actions suivantes
+}
+
+/*
+ * Les slots de la fenêtre UIInspectAccount
+ */
+void Controller::onClose_UIInspectAccount()
+{
+    uiInspectAccount.reinit();
+    uiInspectAccount.close();
+    uiListVirement.show();
+    reloadAccounts();
+}
+
+void Controller::onApprouver_UIInspectAccount()
+{
+    // Récupérer l'ID du compte sélectionné
+    QString compteTire = uiInspectAccount.getCompteTire();
+    QString compteBeneficiaire = uiInspectAccount.getCompteBeneficiaire();
+    double montant = uiInspectAccount.getMontant().toDouble();
+
+    // Appeler le service pour approver le virement
+    service.approuverVirement(compteTire, compteBeneficiaire, montant);
+    uiInspectAccount.information("Virement Approuve", "La transaction a été approuve avec succès.");
+    uiInspectAccount.reinit();
+    uiInspectAccount.close();
+    uiListAccount.show();
+    reloadAccounts();
+}
+
+void Controller::onRejeter_UIInspectAccount()
+{   
+    // Récupérer l'ID du compte sélectionné
+    int idTransaction = uiInspectAccount.getIdTransaction().toInt();
+
+    // Appeler le service pour geler le compte
+    bool rejet = service.rejeterVirement(idTransaction);
+
+    if (rejet) {
+        uiInspectAccount.information("Virement Rejette", "La transaction a été rejette avec succès.");
+        uiInspectAccount.reinit();
+        uiInspectAccount.close();
+        uiListTransaction.show();
+        reloadTransactions();
+    } else {
+        uiInspectAccount.critical("Virement Rejette", "Une erreur s'est produite");
+        uiInspectAccount.close();
+    }
+
 }
 
 /*
@@ -595,47 +871,41 @@ void Controller::onClose_UIListTransaction()
  */
 void Controller::onCreate_UIAccount()
 {
-    QMap <QString, QString> input;
-    bool ok {true};
+    QMap<QString, QString> input;
+    bool ok = true;
 
     QString idClient = uiAccount.getIdClient();
     input.insert("idClient", idClient);
     input.insert("type", uiAccount.getType());
+    QString statut = uiAccount.getStatut(); // Récupérer le statut
+    input.insert("statut", statut); // Ajouter le statut à la QMap
+
     QString accountNumber = uiAccount.getAccountNumber();
-    if (accountNumber.compare("") == 0)
-    {
-        uiClient.critical("Contrôle de saisie", "Le numero de compte n'est pas renseigné !!");
+    if (accountNumber.isEmpty()) {
+        uiClient.critical("Contrôle de saisie", "Le numéro de compte n'est pas renseigné !!");
         ok = false;
-    }
-    else
-    {
+    } else {
         input.insert("number", accountNumber);
-        // -
         QString balance = uiAccount.getBalance();
-        if (balance.compare("") == 0)
-        {
+        if (balance.isEmpty()) {
             uiClient.critical("Contrôle de saisie", "Le solde initial n'est pas renseigné !!");
             ok = false;
-        }
-        else
-        {
+        } else {
             input.insert("balance", balance);
         }
     }
 
-    if (ok)
-    {
-        // -
+    if (ok) {
         service.ajouterUnCompte(input);
-        uiAccount.information("Fin de la transation", "Compte ajouté avec succès.");
-        uiAccount.populate("-1", idClient, "", "COURANT", "0");
+        uiAccount.information("Fin de la transaction", "Compte ajouté avec succès.");
+        uiAccount.populate("-1", idClient, "", "COURANT", "0", "ACTIF");
     }
 }
 
 void Controller::onUpdate_UIAccount()
 {
-    QMap <QString, QString> input;
-    bool ok {true};
+    QMap<QString, QString> input;
+    bool ok = true;
 
     QString accountId = uiAccount.getAccountId();
     input.insert("accountId", accountId);
@@ -647,26 +917,24 @@ void Controller::onUpdate_UIAccount()
     input.insert("balance", balance);
 
     input.insert("type", uiAccount.getType());
+    QString statut = uiAccount.getStatut(); // Récupérer le statut
+    input.insert("statut", statut); // Ajouter le statut à la QMap
+
     QString accountNumber = uiAccount.getAccountNumber();
-    if (accountNumber.compare("") == 0)
-    {
-        uiClient.critical("Contrôle de saisie", "Le numero de compte n'est pas renseigné !!");
+    if (accountNumber.isEmpty()) {
+        uiClient.critical("Contrôle de saisie", "Le numéro de compte n'est pas renseigné !!");
         ok = false;
-    }
-    else
-    {
+    } else {
         input.insert("number", accountNumber);
     }
 
-    if (ok)
-    {
-        // -
+    if (ok) {
         service.modifierUnCompte(input);
         uiAccount.information("Fin de l'opération", "Compte modifié avec succès.");
         uiAccount.hide();
-
         uiListAccount.show();
         uiListAccount.top();
+        reloadAccounts();
     }
 }
 
@@ -674,6 +942,44 @@ void Controller::onClose_UIAccount()
 {
     uiAccount.hide();
     uiListAccount.show();
+    reloadAccounts();
+}
+
+/*
+ * Les slots de la fenêtre UISettings
+ */
+void Controller::onSave_UISettings()
+{
+    // Récupérer les valeurs des paramètres depuis l'interface
+    int transactionLimit = uiSettings.getTransactionLimit();
+    int minAmount = uiSettings.getMinimumAmount();
+    int maxAmount = uiSettings.getMaximumAmount();
+    bool notificationsEnabled = uiSettings.getNotifications();
+
+    // Mettre à jour les paramètres dans la base de données
+    bool success = service.updateSystemSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+
+    if (success) {
+        uiSettings.information("Paramètres système", "Les paramètres ont été enregistrés avec succès.");
+        uiSettings.hide();
+        uiUser.show();
+    } else {
+        uiSettings.critical("Paramètres système", "Une erreur est survenue lors de l'enregistrement des paramètres.");
+    }
+}
+
+void Controller::onQuit_UISettings()
+{
+    uiSettings.hide();
+    uiUser.reinit();
+    uiUser.show();
+}
+
+void Controller::onQuit_UIAdminNotif()
+{
+    uiAdminNotif.hide();
+    uiUser.reinit();
+    uiUser.show();
 }
 
 Controller::~Controller()

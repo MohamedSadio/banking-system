@@ -32,7 +32,7 @@
       <x>100</x>
       <y>10</y>
       <width>251</width>
-      <height>51</height>
+      <height>56</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -66,25 +66,12 @@
     <property name="geometry">
      <rect>
       <x>100</x>
-      <y>60</y>
-      <width>251</width>
-      <height>41</height>
+      <y>70</y>
+      <width>260</width>
+      <height>50</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
      <item row="0" column="1">
       <widget class="QPushButton" name="pushButtonSubmit">
        <property name="text">
@@ -98,6 +85,19 @@
         <string>Exit</string>
        </property>
       </widget>
+     </item>
+     <item row="0" column="0">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item row="0" column="3">
       <spacer name="horizontalSpacer_2">
@@ -113,22 +113,6 @@
       </spacer>
      </item>
     </layout>
-   </widget>
-   <widget class="QLabel" name="imageLabel">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>61</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>cadenas_1.png</pixmap>
-    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

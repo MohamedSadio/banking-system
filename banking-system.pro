@@ -11,20 +11,31 @@ CONFIG += c++11
 SOURCES += \
     account.cpp \
     accountmodel.cpp \
+    adminnotif.cpp \
+    adminnotifmodel.cpp \
     main.cpp \
+    message.cpp \
+    messagemodel.cpp \
     notif.cpp \
     notifmodele.cpp \
+    settingsmodel.cpp \
     transaction.cpp \
     uiabstractwindow.cpp \
     controller.cpp \
     dbmanager.cpp \
     service.cpp \
+    uiaddclient.cpp \
+    uiadminnotif.cpp \
     uiclient.cpp \
+    uiinspectaccount.cpp \
     uilistuser.cpp \
     uilistclient.cpp \
     uilistaccount.cpp \
+    uilistvirement.cpp \
     uiloginin.cpp \
+    uimessage.cpp \
     uinotif.cpp \
+    uisettings.cpp \
     uiuser.cpp \
     user.cpp \
     usermodel.cpp \
@@ -35,19 +46,30 @@ SOURCES += \
 HEADERS += \
     account.h \
     accountmodel.h \
+    adminnotif.h \
+    adminnotifmodel.h \
+    message.h \
+    messagemodel.h \
     notif.h \
     notifmodele.h \
+    settingsmodel.h \
     transaction.h \
     uiabstractwindow.h \
     controller.h \
     dbmanager.h \
     service.h \
+    uiaddclient.h \
+    uiadminnotif.h \
     uiclient.h \
+    uiinspectaccount.h \
     uilistuser.h \
     uilistclient.h \
     uilistaccount.h \
+    uilistvirement.h \
     uiloginin.h \
+    uimessage.h \
     uinotif.h \
+    uisettings.h \
     uiuser.h \
     user.h \
     usermodel.h \
@@ -56,12 +78,18 @@ HEADERS += \
     uiaccount.h
 
 FORMS += \
+    uiaddclient.ui \
+    uiadminnotif.ui \
     uiclient.ui \
+    uiinspectaccount.ui \
     uilistuser.ui \
     uilistclient.ui \
     uilistaccount.ui \
+    uilistvirement.ui \
     uiloginin.ui \
+    uimessage.ui \
     uinotif.ui \
+    uisettings.ui \
     uiuser.ui \
     uilisttransaction.ui \
     uiaccount.ui
