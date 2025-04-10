@@ -6,6 +6,9 @@
 #include "accountmodel.h"
 #include "transactionmodel.h"
 #include "notifmodele.h"
+#include "settingsmodel.h"
+#include "adminnotifmodel.h"
+#include "messagemodel.h"
 
 class Service
 {
@@ -39,16 +42,35 @@ public:
 //    void rejeterVirement(int idTransaction);
     bool rejeterVirement(int idTransaction);
 
+    bool updateSystemSettings(int transactionLimit, int minAmount, int maxAmount, bool notificationsEnabled);
+    bool loadSystemSettings(int &transactionLimit, int &minAmount, int &maxAmount, bool &notificationsEnabled);
+    bool areNotificationsEnabled();
+    bool isTransactionAmountValid(int amount);
+
+    bool envoyerMessage(int expediteurId, int destinataireId, QString objet, QString contenu);
+    void listerMessagesRecus(int userId);
+    void listerMessagesEnvoyes(int userId);
+    Message lireMessage(int messageId);
+    bool marquerMessageCommeLu(int messageId, bool lu);
+    int getNombreMessagesNonLus(int userId);
+    QList<User> listerUtilisateursPourMessage();
+
     Service(UserModel* userModel);
     Service(UserModel* userModel, AccountModel* accountModel);
     Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel);
-    Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel,NotifModele notifModel);
+    Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel,NotifModele* notifModel);
+    Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel,SettingsModel* settingsModel);
+    Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel,SettingsModel* settingsModel, AdminNotifModel* adminNotifModel, NotifModele* notifModele);
+    Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel,SettingsModel* settingsModel, AdminNotifModel* adminNotifModel, NotifModele* notifModele, MessageModel* messageModel);
 
 private:
     UserModel* userModel;
     AccountModel* accountModel;
     TransactionModel* transactionModel;
     NotifModele* notifModele;
+    SettingsModel* settingsModel;
+    AdminNotifModel* adminNotifModel;
+    MessageModel* messageModel;
 
     bool effectuerUnRetrait(int idClient, double montant);
     void effectuerUnVersement(int idClient, double montant);

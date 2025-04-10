@@ -12,6 +12,20 @@ Service::Service(UserModel* _userModel, AccountModel* _accountModel) :
 Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel) :
     userModel(_userModel), accountModel(_accountModel), transactionModel (_transactionModel) {}
 
+Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel, SettingsModel* _settingsModel) :
+    userModel(_userModel), accountModel(_accountModel), transactionModel (_transactionModel), settingsModel(_settingsModel) {}
+
+Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel, SettingsModel* _settingsModel, AdminNotifModel* _adminNotifModel, NotifModele* _notifModele) :
+    userModel(_userModel), accountModel(_accountModel), transactionModel (_transactionModel),
+    notifModele(_notifModele), settingsModel(_settingsModel), adminNotifModel(_adminNotifModel) {}
+
+Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel,
+                 SettingsModel* _settingsModel, AdminNotifModel* _adminNotifModel, NotifModele* _notifModele,
+                 MessageModel* _messageModel) :
+    userModel(_userModel), accountModel(_accountModel), transactionModel(_transactionModel),
+    notifModele(_notifModele), settingsModel(_settingsModel), adminNotifModel(_adminNotifModel),
+    messageModel(_messageModel) {}
+
 Role Service::authentifier(QString login, QString password)
 {
     qDebug () << "Service::authentifier " << login << "-" << password << "";
@@ -216,10 +230,19 @@ void Service::executeTransaction(QMap<QString, QString> input, bool &status, QSt
     QString montant = input.value("montant");
     QString numeroBeneficiaire = input.value("numeroBeneficiaire");
 
+    int amountValue = montant.toInt();
+
+    if (!isTransactionAmountValid(amountValue)) {
+       status = false;
+       message = "**ERR** Le montant de la transaction n'est pas valide. Veuillez respecter les limites configurées.";
+       return;
+    }
+
     if (typeTransaction.compare("VERSEMENT") == 0)
     {
         effectuerUnVersement(connectedUserId.toInt(), montant.toDouble());
         message = "Versement effectué avec succès.";
+        status = true;
     }
     else if (typeTransaction.compare("RETRAIT") == 0)
     {
@@ -232,10 +255,13 @@ void Service::executeTransaction(QMap<QString, QString> input, bool &status, QSt
         qDebug () << typeTransaction << "- Service::executeTransaction";
         effectuerUnVirement(connectedUserId.toInt(), numeroBeneficiaire, montant.toDouble());
         message = "Le virement a été enrégistré et est en cours de traitement ... vous recevrez une notification.";
+        status = true;
     }
     else
     {
         qDebug () << "typeTransaction " << typeTransaction << " - aucune transaction elligible - Service::executeTransaction";
+        status = false;
+        message = "**ERR** Type de transaction non reconnu.";
     }
 }
 
@@ -284,7 +310,7 @@ void Service::approuverVirement(QString numeroCompteTire, QString numeroCompteBe
 
     transactionModel->create(transactionBeneficiaire);
 
-    // Créer une notification pour l'utilisateur
+    //Créer une notification pour l'utilisateur
 //    QDate today = QDate::currentDate();
 //    QTime now = QTime::currentTime();
 //    Notif notif(idClient, compteTire.getId(), "Votre virement a été approuvé.", "Le virement de " + QString::number(montant) + " vers le compte " + numeroCompteBeneficiaire + " a été effectué avec succès.", today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
@@ -340,4 +366,73 @@ void Service::modifierUnCompte(QMap<QString, QString> input)
 bool Service::gelerCompte(int accountId)
 {
     return accountModel->gelerCompte(accountId);
+}
+
+bool Service::updateSystemSettings(int transactionLimit, int minAmount, int maxAmount, bool notificationsEnabled)
+{
+    return settingsModel->updateSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+}
+
+bool Service::loadSystemSettings(int &transactionLimit, int &minAmount, int &maxAmount, bool &notificationsEnabled)
+{
+    return settingsModel->loadSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+}
+
+bool Service::areNotificationsEnabled()
+{
+    int transactionLimit, minAmount, maxAmount;
+    bool notificationsEnabled;
+    settingsModel->loadSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+    return notificationsEnabled;
+}
+
+bool Service::isTransactionAmountValid(int amount)
+{
+    int transactionLimit, minAmount, maxAmount;
+    bool notificationsEnabled;
+    settingsModel->loadSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+
+    // Vérifier si le montant est valide
+    return (amount >= minAmount && amount <= maxAmount && amount <= transactionLimit);
+}
+
+bool Service::envoyerMessage(int expediteurId, int destinataireId, QString objet, QString contenu) {
+    Message message(expediteurId, destinataireId, objet, contenu);
+    return messageModel->create(message);
+}
+
+void Service::listerMessagesRecus(int userId) {
+    messageModel->getSelectionModel()->reset();
+    messageModel->readAllReceivedMessages(userId);
+}
+
+void Service::listerMessagesEnvoyes(int userId) {
+    messageModel->getSelectionModel()->reset();
+    messageModel->readAllSentMessages(userId);
+}
+
+Message Service::lireMessage(int messageId) {
+    Message message = messageModel->read(messageId);
+    if (message.getId() != -1 && !message.getIsRead()) {
+        messageModel->markAsRead(messageId);
+    }
+    return message;
+}
+
+bool Service::marquerMessageCommeLu(int messageId, bool lu) {
+    Message message = messageModel->read(messageId);
+    if (message.getId() != -1) {
+        message.setIsRead(lu);
+        return messageModel->update(message);
+    }
+    return false;
+}
+
+
+int Service::getNombreMessagesNonLus(int userId) {
+    return messageModel->getUnreadMessageCount(userId);
+}
+
+QList<User> Service::listerUtilisateursPourMessage() {
+    return userModel->list();
 }

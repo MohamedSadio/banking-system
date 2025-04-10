@@ -278,7 +278,7 @@ void Controller::onUpdate_UIUser()
     if (nom.isEmpty() || login.isEmpty())
     {
         uiUser.warning("Mise a jour d'une User",
-                            "Veuillez renseigner tous les champs svp.");
+                       "Veuillez renseigner tous les champs svp.");
     }
     else
     {
@@ -331,6 +331,20 @@ void Controller::onComboBoxRoleChanged_UIUser()
     }
 }
 
+void Controller::onSettings_UIUser()
+{
+    uiUser.hide();
+    uiSettings.show();
+}
+
+void Controller::onNotifs_UIUser()
+{
+    uiUser.hide();
+    uiAdminNotif.show();
+}
+
+void Controller::onMessages_UIUser() {}
+
 /*
  * Les slots de la fenetre UIAddCLient
  */
@@ -345,7 +359,7 @@ void Controller::onCreate_UIAddClient()
     {
 
         uiAddClient.warning("Ajout d'une nouvelle User",
-                       "Veuillez renseigner tous les champs svp.");
+                            "Veuillez renseigner tous les champs svp.");
     }
     else
     {
@@ -393,7 +407,7 @@ void Controller::onOuvrir_UIClient()
     if (index.isValid() == false)
     {
         uiClient.warning("Ouverture de vos comptes",
-                              "Veuillez selectionner un de vos comptes svp ...");
+                         "Veuillez selectionner un de vos comptes svp ...");
     }
     else
     {
@@ -411,7 +425,7 @@ void Controller::onVirement_UIClient()
     if (index.isValid() == false)
     {
         uiClient.warning("Opération de virement",
-                              "Veuillez selectionner un de vos comptes svp ...");
+                         "Veuillez selectionner un de vos comptes svp ...");
     }
     else
     {
@@ -426,7 +440,7 @@ void Controller::onRetrait_UIClient()
     if (index.isValid() == false)
     {
         uiClient.warning("Opération de retrait",
-                              "Veuillez selectionner un de vos comptes svp ...");
+                         "Veuillez selectionner un de vos comptes svp ...");
     }
     else
     {
@@ -441,7 +455,7 @@ void Controller::onVersement_UIClient()
     if (index.isValid() == false)
     {
         uiClient.warning("Opération de depôt",
-                              "Veuillez selectionner un de vos comptes svp ...");
+                         "Veuillez selectionner un de vos comptes svp ...");
     }
     else
     {
@@ -504,14 +518,12 @@ void Controller::onOK_UIClient()
 
     if (ok)
     {        
-        // -
         QString transaction_message;
         bool status {true};
         qDebug () << typeTransaction << "- Controller::onOK_UIClient";
         service.executeTransaction(input, status, transaction_message);
         if (status == true)
         {
-            // -
             uiClient.hideTransactionForm();
             uiClient.information("Fin de la transation", transaction_message);
         }
@@ -544,7 +556,7 @@ void Controller::onOuvrir_UIListClient()
     if (index.isValid() == false)
     {
         uiListUser.warning("Mise a jour des informations d'une User",
-                              "Veuillez selectionner une ligne svp ...");
+                           "Veuillez selectionner une ligne svp ...");
     }
     else
     {
@@ -614,7 +626,7 @@ void Controller::onNouveau_UIListAccount()
 void Controller::onModifier_UIListAccount()
 {
     QModelIndex userIndex = userModel->getSelectionModel()->currentIndex();
-    // -
+
     int selectedUserLine = userIndex.row();
     QSqlRecord selectedUserRecord = userModel->record(selectedUserLine);
     QSqlField userField = selectedUserRecord.field(0);
@@ -655,7 +667,7 @@ void Controller::onOuvrir_UIListAccount()
     if (index.isValid() == false)
     {
         uiClient.warning("Ouverture de vos comptes",
-                              "Veuillez selectionner un de vos comptes svp ...");
+                         "Veuillez selectionner un de vos comptes svp ...");
     }
     else
     {
@@ -931,6 +943,43 @@ void Controller::onClose_UIAccount()
     uiAccount.hide();
     uiListAccount.show();
     reloadAccounts();
+}
+
+/*
+ * Les slots de la fenêtre UISettings
+ */
+void Controller::onSave_UISettings()
+{
+    // Récupérer les valeurs des paramètres depuis l'interface
+    int transactionLimit = uiSettings.getTransactionLimit();
+    int minAmount = uiSettings.getMinimumAmount();
+    int maxAmount = uiSettings.getMaximumAmount();
+    bool notificationsEnabled = uiSettings.getNotifications();
+
+    // Mettre à jour les paramètres dans la base de données
+    bool success = service.updateSystemSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+
+    if (success) {
+        uiSettings.information("Paramètres système", "Les paramètres ont été enregistrés avec succès.");
+        uiSettings.hide();
+        uiUser.show();
+    } else {
+        uiSettings.critical("Paramètres système", "Une erreur est survenue lors de l'enregistrement des paramètres.");
+    }
+}
+
+void Controller::onQuit_UISettings()
+{
+    uiSettings.hide();
+    uiUser.reinit();
+    uiUser.show();
+}
+
+void Controller::onQuit_UIAdminNotif()
+{
+    uiAdminNotif.hide();
+    uiUser.reinit();
+    uiUser.show();
 }
 
 Controller::~Controller()
