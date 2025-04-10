@@ -6,9 +6,9 @@
 class Notif
 {
 public:
-    Notif(int idClient,int number,QString typeNotif,QString message,QString date);
+    Notif(int idClient,QString number,QString typeNotif,QString message,QString date);
     Notif(int id,QString typeNotif,QString message,QString date);
-    Notif(int id,int idClient,int number,QString typeNotif,QString message,QString date);
+    Notif(int id,int idClient,QString number,QString typeNotif,QString message,QString date);
 
     Notif();
 

@@ -1,4 +1,5 @@
 #include "dbmanager.h"
+#include "QDebug"
 
 // initialisation de l'instance a null
 DBManager* DBManager::instance = nullptr;
@@ -17,14 +18,16 @@ DBManager::DBManager()
 
 bool DBManager::open()
 {
+    qDebug() << "Database open1";
     if (db.isOpen()) return true;
-
+     qDebug() << "Database open2";
     if (db.open()) return true;
     else
     {
         qDebug("Failed to open connection.");
         return false;
     }
+    qDebug() << "Database open3";
 }
 
 void DBManager::close()

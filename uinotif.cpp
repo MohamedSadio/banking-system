@@ -17,10 +17,10 @@ UINotif::UINotif(QObject* controller) :
 }
 
 void UINotif::setTableViewModel(NotifModele* notifModel){
-    ui->tableViewNotif->setModel(dynamic_cast<QAbstractItemModel*> (notifModel));
-    ui->tableViewNotif->setSelectionModel(notifModel->getSelectionModel());
+    ui->listView->setModel(dynamic_cast<QAbstractItemModel*> (notifModel));
+    ui->listView->setSelectionModel(notifModel->getSelectionModel());
 
-    ui->tableViewNotif->show();
+    ui->listView->show();
 }
 
 void UINotif::updateTitle(QString libelle)
@@ -29,10 +29,10 @@ void UINotif::updateTitle(QString libelle)
 }
 
 void UINotif::top(){
-    QAbstractItemModel *model = ui->tableViewNotif->model();
+    QAbstractItemModel *model = ui->listView->model();
     if (model && model->rowCount() > 0) {
             int lastRow = model->rowCount() - 1;
-            ui->tableViewNotif->setCurrentIndex(model->index(lastRow, 0));
+            ui->listView->setCurrentIndex(model->index(lastRow, 0));
         }
 }
 

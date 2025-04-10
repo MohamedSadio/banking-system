@@ -12,6 +12,10 @@ Service::Service(UserModel* _userModel, AccountModel* _accountModel) :
 Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel) :
     userModel(_userModel), accountModel(_accountModel), transactionModel (_transactionModel) {}
 
+Service::Service(UserModel* _userModel, AccountModel* _accountModel, TransactionModel* _transactionModel,NotifModele* _notifModel) :
+    userModel(_userModel), accountModel(_accountModel), transactionModel (_transactionModel), notifModele(_notifModel) {}
+
+
 Role Service::authentifier(QString login, QString password)
 {
     qDebug () << "Service::authentifier " << login << "-" << password << "";
@@ -137,7 +141,11 @@ bool Service::effectuerUnRetrait(int idClient, double montant)
 
     Transaction transaction ("Retrait", idClient, accountId, -1, account.getNumber(), "NULL", montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "Completed");
     transactionModel->create(transaction);
-    Notif notif(idClient,accountId,"Votre operation de Retrait sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
+    if (!notifModele) {  // Si vous utilisez ce pointeur ailleurs
+        qCritical("notifModele est null !");
+        return 1;
+    }
+    Notif notif(idClient,account.getNumber(),"Votre operation de Retrait sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
     notifModele->create(notif);
 
     return true;
@@ -161,7 +169,7 @@ void Service::effectuerUnVersement(int idClient, double montant)
 
     Transaction transaction ("Versement", idClient, -1, accountId, "NULL", account.getNumber(), montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "Completed");
     transactionModel->create(transaction);
-    Notif notif(idClient,accountId,"Votre operation de Versement sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
+    Notif notif(idClient,account.getNumber(),"Votre operation de Versement sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
     notifModele->create(notif);
 }
 
@@ -179,7 +187,7 @@ void Service::effectuerUnVirement (int idClient, QString numeroCompteBeneficiair
 
     Transaction transaction ("Virement", idClient, accountId, -1, account.getNumber(), numeroCompteBeneficiaire, montant, today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"), "In progress");
     transactionModel->create(transaction);
-    Notif notif(idClient,accountId,"Votre operation de Virement sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
+    Notif notif(idClient,account.getNumber(),"Votre operation de Virement sur le compte","a été effectué avec succés",today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
     notifModele->create(notif);
 }
 

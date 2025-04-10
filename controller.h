@@ -40,7 +40,7 @@ private:
     TransactionModel* transactionModel = new TransactionModel;
     NotifModele* notifModel = new NotifModele;
 
-    Service service {userModel, accountModel, transactionModel}; // Le classe service pour déclencher les fonctionnalités
+    Service service {userModel, accountModel, transactionModel ,notifModel}; // Le classe service pour déclencher les fonctionnalités
 
 public:
     explicit Controller(QObject* parent = nullptr);

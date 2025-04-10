@@ -33,7 +33,7 @@ public:
     Service(UserModel* userModel);
     Service(UserModel* userModel, AccountModel* accountModel);
     Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel);
-    Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel,NotifModele notifModel);
+    Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel,NotifModele* notifModel);
 
 private:
     UserModel* userModel;

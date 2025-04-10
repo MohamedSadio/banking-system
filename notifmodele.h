@@ -17,6 +17,7 @@ class NotifModele : public QSqlQueryModel
 {
 public:
     NotifModele();
+    ~NotifModele(){};
     QItemSelectionModel* getSelectionModel() { return selectionModel; }
 
     void create(Notif notif);
@@ -29,6 +30,8 @@ public:
 
     void readBy(int clientId);
     void setHeaderTitle();
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 private:
     DBManager* dbManager;
