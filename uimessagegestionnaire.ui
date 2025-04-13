@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>UIMessage</class>
- <widget class="QMainWindow" name="UIMessage">
+ <widget class="QMainWindow" name="UIMessageGestionnaire">
   <property name="geometry">
    <rect>
     <x>0</x>

@@ -38,6 +38,7 @@ public:
 
     void readUserEmail();
     int getEmailId(QString email);
+    void readClientEmailsCreatesByManager(int managerId);
 
     // Rafraîchit la collection et la tableView ...
     void readAll();

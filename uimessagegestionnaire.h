@@ -1,5 +1,5 @@
-#ifndef UIMESSAGE_H
-#define UIMESSAGE_H
+#ifndef UIMESSAGEGESTIONNAIRE_H
+#define UIMESSAGEGESTIONNAIRE_H
 
 #include <QMainWindow>
 #include <QTableView>
@@ -8,16 +8,16 @@
 #include <QSqlQuery>
 
 namespace Ui {
-class UIMessage;
+class UIMessageGestionnaire;
 }
 
-class UIMessage : public QMainWindow, public UIAbstractWindow
+class UIMessageGestionnaire : public QMainWindow, public UIAbstractWindow
 {
     Q_OBJECT
 
 public:
-    explicit UIMessage(QWidget *parent = nullptr);
-    UIMessage(QObject* controller);
+    explicit UIMessageGestionnaire(QWidget *parent = nullptr);
+    UIMessageGestionnaire(QObject* controller);
     void updateTitle(QString libelle);
 
     QString getMessageContent();
@@ -41,12 +41,11 @@ public:
 
     void viewMessageDetails(QString sender, QString subject,
                            QString content, QString date);
-
-    ~UIMessage();
+    ~UIMessageGestionnaire();
 
 private:
-    Ui::UIMessage *ui;
+    Ui::UIMessageGestionnaire *ui;
     DBManager* dbManager;
 };
 
-#endif // UIMESSAGE_H
+#endif // UIMESSAGEGESTIONNAIRE_H

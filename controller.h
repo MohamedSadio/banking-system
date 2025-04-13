@@ -21,6 +21,7 @@
 #include "uisettings.h"
 #include "uiadminnotif.h"
 #include "uimessage.h"
+#include "uimessagegestionnaire.h"
 
 class Controller : public QObject
 {
@@ -43,6 +44,7 @@ private:
     UISettings uiSettings {this};
     UIAdminNotif uiAdminNotif {this};
     UIMessage uiMessage {this};
+    UIMessageGestionnaire uiMessageGestionnaire {this};
 
     Role connectedUserType;
     User connectedUser;
@@ -117,8 +119,8 @@ private slots:
      * Les slots de la fenêtre UIListClient
      */
     void onClose_UIListClient();
-    //void onCreate_UIListClient();
     void onOuvrir_UIListClient();
+    void onMessage_UIListClient();
 
     /*
      * Les slots de la fenêtre UIListAccount
@@ -176,11 +178,19 @@ private slots:
      * Les slots de la fenêtre UIMessage
      */
     void onSend_UIMessage();
-    void onRefresh_UIMessage();
     void onQuit_UIMessage();
     void onTabChanged_UIMessage(int);
     void onOpenMessage_UIMessage(QModelIndex index);
     void onReply_UIMessage();
+
+    /*
+     * Les slots de la fenêtre UIMessageGestionnaire
+     */
+    void onSend_UIMessageGestionnaire();
+    void onQuit_UIMessageGestionnaire();
+    void onTabChanged_UIMessageGestionnaire(int);
+    void onOpenMessage_UIMessageGestionnaire(QModelIndex index);
+    void onReply_UIMessageGestionnaire();
 
 };
 #endif // CONTROLLER_H

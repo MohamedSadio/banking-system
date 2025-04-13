@@ -124,36 +124,6 @@ void UIMessage::viewMessageDetails(QString sender, QString subject,
     ui->tabWidgetMessages->setCurrentIndex(3);
 }
 
-void UIMessage::loadUsers()
-{
-    // Vider le comboBox et la map
-    ui->comboBoxReceiver->clear();
-    m_userMap.clear();
-
-    // Connexion à la base de données (supposée déjà établie)
-    dbManager->open();
-    QSqlQuery query(dbManager->database());
-    query.prepare("SELECT id, nom, FROM t_users");
-
-    if (query.exec()) {
-        // Parcourir les résultats et remplir le comboBox
-        while (query.next()) {
-            int id = query.value("id").toInt();
-            QString nom = query.value("nom").toString();
-            QString prenom = query.value("login").toString();
-
-            QString displayName = nom.toUpper();
-
-            m_userMap[id] = displayName;
-
-            ui->comboBoxReceiver->addItem(displayName, id);
-        }
-    } else {
-        QMessageBox::critical(this, "Erreur", "Impossible de charger la liste des utilisateurs: "
-                              + query.lastError().text());
-    }
-}
-
 UIMessage::~UIMessage()
 {
     delete ui;
