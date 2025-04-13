@@ -1,4 +1,5 @@
 #include "controller.h"
+#include <QMessageBox>
 
 Controller::Controller(QObject* parent) :
     QObject(parent)
@@ -343,7 +344,11 @@ void Controller::onNotifs_UIUser()
     uiAdminNotif.show();
 }
 
-void Controller::onMessages_UIUser() {}
+void Controller::onMessages_UIUser()
+{
+    uiUser.hide();
+    uiMessage.show();
+}
 
 /*
  * Les slots de la fenetre UIAddCLient
@@ -591,14 +596,14 @@ void Controller::onOuvrir_UIListClient()
     }
 }
 
-void Controller::onCreate_UIListClient()
+/*void Controller::onCreate_UIListClient()
 {
     uiListClient.close();
     uiAddClient.setIdEditableFalse();
     uiAddClient.show();
     uiAddClient.reinit();
     uiAddClient.updateTitle (connectedUser.getNom());
-}
+}*/
 
 /*
  * Les slots de la fenêtre UIListAccount
@@ -980,6 +985,139 @@ void Controller::onQuit_UIAdminNotif()
     uiAdminNotif.hide();
     uiUser.reinit();
     uiUser.show();
+}
+
+/*
+ * Les slots de la fenêtre UIMessage
+ */
+
+void Controller::onSend_UIMessage()
+{
+    int senderId = connectedUser.getId();
+    int receiverId = uiMessage.getSelectedReceiverId();
+    QString subject = uiMessage.getMessageSubject();
+    QString content = uiMessage.getMessageContent();
+
+    if (subject.isEmpty() || content.isEmpty()) {
+        uiMessage.warning("Envoi impossible", "L'objet et le contenu du message sont obligatoires.");
+        return;
+    }
+
+    // Enregistrer le message dans la base de données en utilisant la méthode service existante
+    if (service.envoyerMessage(senderId, receiverId, subject, content)) {
+        uiMessage.information("Envoi réussi", "Votre message a été envoyé avec succès.");
+        uiMessage.clearMessageForm();
+
+        service.listerMessagesEnvoyes(connectedUser.getId());
+        uiMessage.getSentMessagesView()->setModel(messageModel);
+    } else {
+        uiMessage.critical("Erreur", "Une erreur est survenue lors de l'envoi du message.");
+    }
+}
+
+void Controller::onRefresh_UIMessage()
+{
+    /*int activeTab = uiMessage.tabWidgetMessages->currentIndex();
+
+    if (activeTab == 1) { // Messages reçus
+        service.listerMessagesRecus(connectedUser.getId());
+        uiMessage.getReceivedMessagesView()->setModel(messageModel);
+    } else if (activeTab == 2) { // Messages envoyés
+        service.listerMessagesEnvoyes(connectedUser.getId());
+        uiMessage.getSentMessagesView()->setModel(messageModel);
+    }*/
+}
+
+void Controller::onQuit_UIMessage()
+{
+    // Fermer la fenêtre des messages et revenir à la fenêtre utilisateur
+    uiMessage.hide();
+    uiUser.show();
+}
+
+void Controller::onTabChanged_UIMessage(int tabIndex)
+{
+    if (tabIndex == 0) { // Nouveau message
+        uiMessage.clearMessageForm();
+
+        // Actualiser la liste des destinataires possibles
+        uiMessage.clearRecipients();
+
+        /*QList<User> users = service.listerUtilisateursPourMessage();
+        for (const User &user : users) {
+            if (user.getId() != connectedUser.getId()) {
+                QString roleLabel = user.getRole() == CLIENT ? "Client" :
+                                   (user.getRole() == GESTIONNAIRE ? "Gestionnaire" : "Administrateur");
+                uiMessage.addReceiver(user.getId(), user.getNom(), roleLabel);
+            }
+        }*/
+    } else if (tabIndex == 1) { // Messages reçus
+        service.listerMessagesRecus(connectedUser.getId());
+        uiMessage.getReceivedMessagesView()->setModel(messageModel);
+    } else if (tabIndex == 2) { // Messages envoyés
+        service.listerMessagesEnvoyes(connectedUser.getId());
+        uiMessage.getSentMessagesView()->setModel(messageModel);
+    }
+}
+
+void Controller::onOpenMessage_UIMessage(QModelIndex index)
+{
+    int messageId = messageModel->data(messageModel->index(index.row(), 0)).toInt();
+
+    Message message = service.lireMessage(messageId);
+
+    QTableView* currentView = qobject_cast<QTableView*>(QObject::sender());
+    bool isReceivedMessage = (currentView == uiMessage.getReceivedMessagesView());
+
+    if (isReceivedMessage && !message.getIsRead()) {
+        service.marquerMessageCommeLu(messageId, true);
+    }
+
+    QString senderName;
+    /*if (isReceivedMessage) {
+        User sender = service.getUser(message.getSenderId());
+        senderName = sender.getNom();
+    } else {
+        User receiver = service.getUser(message.getReceiverId());
+        senderName = "À: " + receiver.getNom();
+    }*/
+
+    // Afficher les détails du message
+    QDateTime date = QDateTime::currentDateTime();
+    uiMessage.viewMessageDetails(senderName, message.getSubject(),
+                               message.getContent(), date.toString("dd/MM/yyyy hh:mm"));
+}
+
+void Controller::onReply_UIMessage()
+{
+    /*int activeTab = uiMessage.tabWidgetMessages->currentIndex();
+    if (activeTab != 3) {
+        return; // Pas sur l'onglet de détail du message
+    }
+
+    int messageId = uiMessage.getSelectedMessageId();
+    if (messageId == -1) {
+        return;
+    }
+
+    Message originalMessage = service.getMessage(messageId);
+
+    uiMessage.tabWidgetMessages->setCurrentIndex(0);
+
+    for (int i = 0; i < uiMessage.comboBoxReceiver->count(); i++) {
+        if (uiMessage.comboBoxReceiver->itemData(i).toInt() == originalMessage.getSenderId()) {
+            uiMessage.comboBoxReceiver->setCurrentIndex(i);
+            break;
+        }
+    }
+
+    QString replySubject = "Re: " + originalMessage.getSubject();
+    uiMessage.lineEditSubject->setText(replySubject);
+
+    QString replyContent = "\n\n----- Message original -----\n" + originalMessage.getContent();
+    uiMessage.textEditMessageContent->setText(replyContent);
+
+    uiMessage.textEditMessageContent->moveCursor(QTextCursor::Start);*/
 }
 
 Controller::~Controller()

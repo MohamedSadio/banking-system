@@ -20,6 +20,7 @@
 #include "uiinspectaccount.h"
 #include "uisettings.h"
 #include "uiadminnotif.h"
+#include "uimessage.h"
 
 class Controller : public QObject
 {
@@ -41,6 +42,7 @@ private:
     UIInspectAccount uiInspectAccount {this};
     UISettings uiSettings {this};
     UIAdminNotif uiAdminNotif {this};
+    UIMessage uiMessage {this};
 
     Role connectedUserType;
     User connectedUser;
@@ -52,8 +54,9 @@ private:
     NotifModele* notifModel = new NotifModele;
     AdminNotifModel* adminNotifModel = new AdminNotifModel;
     SettingsModel* settingsModel = new SettingsModel;
+    MessageModel* messageModel = new MessageModel;
 
-    Service service {userModel, accountModel, transactionModel, settingsModel, adminNotifModel, notifModel}; // Le classe service pour déclencher les fonctionnalités
+    Service service {userModel, accountModel, transactionModel, settingsModel, adminNotifModel, notifModel, messageModel}; // Le classe service pour déclencher les fonctionnalités
 
 public:
     explicit Controller(QObject* parent = nullptr);
@@ -114,7 +117,7 @@ private slots:
      * Les slots de la fenêtre UIListClient
      */
     void onClose_UIListClient();
-    void onCreate_UIListClient();
+    //void onCreate_UIListClient();
     void onOuvrir_UIListClient();
 
     /*
@@ -168,6 +171,17 @@ private slots:
      * Les slots de la fenêtre UIAdminNotif
      */
     void onQuit_UIAdminNotif();
+
+    /*
+     * Les slots de la fenêtre UIMessage
+     */
+    void onSend_UIMessage();
+    void onRefresh_UIMessage();
+    void onQuit_UIMessage();
+    void onTabChanged_UIMessage(int);
+    void onOpenMessage_UIMessage(QModelIndex index);
+    void onReply_UIMessage();
+
 };
 #endif // CONTROLLER_H
 

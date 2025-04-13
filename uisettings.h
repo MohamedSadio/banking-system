@@ -15,7 +15,6 @@ class UISettings : public QMainWindow, public UIAbstractWindow
 public:
     explicit UISettings(QWidget *parent = nullptr);
     UISettings(QObject* controller);
-    void updateTitle (QString libelle);
     ~UISettings();
 
     int getTransactionLimit();
@@ -27,6 +26,7 @@ public:
     void setMinimumAmount(int min);
     void setMaximumAmount(int max);
     void setNotifications(bool enabled);
+    void updateTitle (QString libelle);
 
     void populateSettings(int transactionLimit, int minimumAmount, int maximumAmount, bool notifications);
 

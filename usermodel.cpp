@@ -177,7 +177,7 @@ void UserModel::readAll()
     QSqlDatabase database = dbManager->database();
 
     this->setQuery("SELECT id, nom, country, birthdate, "
-                   "login, password, email, role, statut FROM t_users", database);
+                   "login, password, email, role, statut, create_by FROM t_users", database);
     setHeaderTitle();
 
     dbManager->close();
