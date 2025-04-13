@@ -6,7 +6,7 @@ DBManager* DBManager::instance = nullptr;
 DBManager::DBManager()
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
-    QString dbFullPath = "F:\\workspace qt\\projet\\database\\banking_system.db";
+    QString dbFullPath = "C:\\Qt-workspace-c++\\Database\\banking_system1.db";
     db.setDatabaseName(dbFullPath);
 
     qDebug("Connection opened successfully with database.");
