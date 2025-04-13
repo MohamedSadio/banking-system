@@ -217,6 +217,19 @@ void TransactionModel::readBy(int clientId)
     dbManager->close();
 }
 
+int TransactionModel::getUserTransactionCount(int idClient)
+{
+    dbManager->open();
+    QSqlQuery query(dbManager->database());
+    query.prepare("SELECT COUNT(*) FROM t_transaction WHERE idClient = :idClient");
+    query.bindValue(":idClient", idClient);
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toInt();
+    }
+    return 0;
+}
+
 // void TransactionModel::read(int idTransaction)
 // {
 //     dbManager->open();

@@ -46,6 +46,7 @@ public:
     bool loadSystemSettings(int &transactionLimit, int &minAmount, int &maxAmount, bool &notificationsEnabled);
     bool areNotificationsEnabled();
     bool isTransactionAmountValid(int amount);
+    bool isTransactionLimitReached(int idClient);
 
     bool envoyerMessage(int expediteurId, int destinataireId, QString objet, QString contenu);
     void listerMessagesRecus(int userId);

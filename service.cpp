@@ -235,10 +235,17 @@ void Service::executeTransaction(QMap<QString, QString> input, bool &status, QSt
     QString numeroBeneficiaire = input.value("numeroBeneficiaire");
 
     int amountValue = montant.toInt();
+    int idClient = connectedUserId.toInt();
 
     if (!isTransactionAmountValid(amountValue)) {
        status = false;
        message = "**ERR** Le montant de la transaction n'est pas valide. Veuillez respecter les limites configurées.";
+       return;
+    }
+
+    if (isTransactionLimitReached(idClient)) {
+       status = false;
+       message = "**ERR** Vous avez atteint votre limite de transactions. Veuillez contacter votre gestionnaire.";
        return;
     }
 
@@ -267,6 +274,33 @@ void Service::executeTransaction(QMap<QString, QString> input, bool &status, QSt
         status = false;
         message = "**ERR** Type de transaction non reconnu.";
     }
+}
+
+bool Service::isTransactionAmountValid(int amount)
+{
+    int transactionLimit, minAmount, maxAmount;
+    bool notificationsEnabled;
+    settingsModel->loadSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+
+    // Vérifier si le montant est valide
+    return (amount >= minAmount && amount <= maxAmount);
+
+}
+
+bool Service::isTransactionLimitReached(int idClient)
+{
+    int transactionLimit, minAmount, maxAmount;
+    bool notificationsEnabled;
+    settingsModel->loadSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
+
+    // Récupérer le nombre de transactions effectuées par l'utilisateur
+    int userTransactionCount = transactionModel->getUserTransactionCount(idClient);
+
+    qDebug() << "User transactions: " << userTransactionCount;
+    qDebug() << "Transaction limit: " << transactionLimit;
+
+    // Vérifier si l'utilisateur a atteint sa limite
+    return userTransactionCount >= transactionLimit;
 }
 
 void Service::approuverVirement(QString numeroCompteTire, QString numeroCompteBeneficiaire, double montant)
@@ -388,16 +422,6 @@ bool Service::areNotificationsEnabled()
     bool notificationsEnabled;
     settingsModel->loadSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
     return notificationsEnabled;
-}
-
-bool Service::isTransactionAmountValid(int amount)
-{
-    int transactionLimit, minAmount, maxAmount;
-    bool notificationsEnabled;
-    settingsModel->loadSettings(transactionLimit, minAmount, maxAmount, notificationsEnabled);
-
-    // Vérifier si le montant est valide
-    return (amount >= minAmount && amount <= maxAmount && amount <= transactionLimit);
 }
 
 bool Service::envoyerMessage(int expediteurId, int destinataireId, QString objet, QString contenu) {

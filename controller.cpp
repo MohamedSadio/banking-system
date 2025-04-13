@@ -967,7 +967,7 @@ void Controller::onSave_UISettings()
     if (success) {
         uiSettings.information("Paramètres système", "Les paramètres ont été enregistrés avec succès.");
         uiSettings.hide();
-        uiUser.show();
+        executeUserList();
     } else {
         uiSettings.critical("Paramètres système", "Une erreur est survenue lors de l'enregistrement des paramètres.");
     }

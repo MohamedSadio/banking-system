@@ -27,6 +27,7 @@ public:
     void updateStatut(Transaction transaction);
     Transaction read(int id); // Modifier le type de retour à Transaction
     Transaction readByBeneficiary(QString accountNumber);
+    int getUserTransactionCount(int idClient);
 
     QList<Transaction> list();
 
