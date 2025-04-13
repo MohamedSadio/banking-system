@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>UIMessage</class>
- <widget class="QMainWindow" name="UIMessage">
+ <widget class="QMainWindow" name="UIMessageGestionnaire">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidgetMessages">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tabNewMessage">
        <attribute name="title">
@@ -125,6 +125,17 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
+           <widget class="QPushButton" name="pushButtonRefresh">
+            <property name="text">
+             <string>Actualiser</string>
+            </property>
+            <property name="icon">
+             <iconset theme="view-refresh">
+              <normaloff>.</normaloff>.</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -136,6 +147,17 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonDelete">
+            <property name="text">
+             <string>Supprimer</string>
+            </property>
+            <property name="icon">
+             <iconset theme="edit-delete">
+              <normaloff>.</normaloff>.</iconset>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -273,6 +295,28 @@
             </property>
            </spacer>
           </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonReply">
+            <property name="text">
+             <string>Répondre</string>
+            </property>
+            <property name="icon">
+             <iconset theme="mail-reply">
+              <normaloff>.</normaloff>.</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonBackToList">
+            <property name="text">
+             <string>Retour à la liste</string>
+            </property>
+            <property name="icon">
+             <iconset theme="go-previous">
+              <normaloff>.</normaloff>.</iconset>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -287,7 +331,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">
@@ -330,5 +374,22 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButtonBackToList</sender>
+   <signal>clicked()</signal>
+   <receiver>tabWidgetMessages</receiver>
+   <slot>tabCloseRequested(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>538</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
