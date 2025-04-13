@@ -170,6 +170,44 @@ void UserModel::remove()
     readAll();
 }
 
+void UserModel::readUserEmail()
+{
+    dbManager->open();
+    QSqlQuery query(dbManager->database());
+
+    query.prepare("SELECT email FROM t_users");
+    query.exec();
+
+    // Créer un tableau pour stocker les résultats
+    QStringList listeEmails;
+
+    // Récupérer les résultats et les ajouter au tableau
+    while (query.next()) {
+        listeEmails << query.value(0).toString();
+    }
+
+    dbManager->close();
+
+    // Stocker la liste des numéros de compte dans un attribut de la classe
+    this->userEmail = listeEmails;
+}
+
+int UserModel::getEmailId(QString email)
+{
+    dbManager->open();
+    QSqlQuery query(dbManager->database());
+    query.prepare("SELECT id FROM t_users WHERE email = :email");
+    query.bindValue(":email", email);
+    query.exec();
+    int id = 0 ;
+    if (query.next()) {
+        id = query.value(0).toInt();
+    }
+    qDebug () << "UserModel::getEmailId::Id : " << query.lastQuery();
+    dbManager->close();
+    return id;
+}
+
 void UserModel::readAll()
 {
     dbManager->open();
@@ -177,7 +215,7 @@ void UserModel::readAll()
     QSqlDatabase database = dbManager->database();
 
     this->setQuery("SELECT id, nom, country, birthdate, "
-                   "login, password, email, role, statut FROM t_users", database);
+                   "login, password, email, role, statut, create_by FROM t_users", database);
     setHeaderTitle();
 
     dbManager->close();

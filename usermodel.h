@@ -18,11 +18,13 @@ private:
     // Permet d'avoir à tout moment les informations
     // sur l'élélement sélectionné sur la vue.
     QItemSelectionModel* selectionModel;
+    QStringList userEmail;
 
 public:
     UserModel();
     ~UserModel() {}
     QItemSelectionModel* getSelectionModel() { return selectionModel; }
+    QStringList getUserEmail() {return userEmail; }
     void create(User person);
     void update(User person);
     User read(int id);
@@ -33,6 +35,9 @@ public:
     // L'element est obtenu a partir de l'objet
     // QItemSelectionModel -> QModelIndex
     void remove();
+
+    void readUserEmail();
+    int getEmailId(QString email);
 
     // Rafraîchit la collection et la tableView ...
     void readAll();

@@ -12,14 +12,14 @@ bool MessageModel::create(Message message) {
     QSqlQuery query(dbManager->database());
 
     query.prepare("INSERT INTO t_messages "
-                  "(sender_id, receiver_id, subject, content, is_read) "
-                  "VALUES (:sender_id, :receiver_id, :subject, :content, :is_read)");
+                     "(senderId, receiverId, subject, content, isRead) "
+                     "VALUES (:senderId, :receiverId, :subject, :content, :isRead)");
 
-    query.bindValue(":sender_id", message.getSenderId());
-    query.bindValue(":receiver_id", message.getReceiverId());
+    query.bindValue(":senderId", message.getSenderId());
+    query.bindValue(":receiverId", message.getReceiverId());
     query.bindValue(":subject", message.getSubject());
     query.bindValue(":content", message.getContent());
-    query.bindValue(":is_read", message.getIsRead());
+    query.bindValue(":isRead", message.getIsRead());
 
     bool success = query.exec();
 
@@ -43,11 +43,11 @@ Message MessageModel::read(int id) {
 
     if (query.exec() && query.next()) {
         message.setId(query.value("id").toInt());
-        message.setSenderId(query.value("sender_id").toInt());
-        message.setReceiverId(query.value("receiver_id").toInt());
+        message.setSenderId(query.value("senderId").toInt());
+        message.setReceiverId(query.value("receiverId").toInt());
         message.setSubject(query.value("subject").toString());
         message.setContent(query.value("content").toString());
-        message.setIsRead(query.value("is_read").toBool());
+        message.setIsRead(query.value("isRead").toBool());
     } else {
         qDebug() << "Error reading message: " << query.lastError().text();
     }
@@ -61,19 +61,19 @@ bool MessageModel::update(Message message) {
     QSqlQuery query(dbManager->database());
 
     query.prepare("UPDATE t_messages SET "
-                  "sender_id = :sender_id, "
-                  "receiver_id = :receiver_id, "
+                  "senderId = :senderId, "
+                  "receiverId = :receiverId, "
                   "subject = :subject, "
                   "content = :content, "
-                  "is_read = :is_read, "
+                  "isRead = :isRead, "
                   "WHERE id = :id");
 
     query.bindValue(":id", message.getId());
-    query.bindValue(":sender_id", message.getSenderId());
-    query.bindValue(":receiver_id", message.getReceiverId());
+    query.bindValue(":senderId", message.getSenderId());
+    query.bindValue(":receiverId", message.getReceiverId());
     query.bindValue(":subject", message.getSubject());
     query.bindValue(":content", message.getContent());
-    query.bindValue(":is_read", message.getIsRead());
+    query.bindValue(":isRead", message.getIsRead());
 
     bool success = query.exec();
 
@@ -110,10 +110,10 @@ void MessageModel::readAllReceivedMessages(int userId) {
     dbManager->open();
     QSqlQuery query(dbManager->database());
 
-    query.prepare("SELECT m.id, u.nom AS sender_name, m.subject, m.is_read "
+    query.prepare("SELECT m.id, u.nom AS sender_name, m.subject, m.isRead "
                   "FROM t_messages m "
-                  "JOIN t_users u ON m.sender_id = u.id "
-                  "WHERE m.receiver_id = :user_id  ");
+                  "JOIN t_users u ON m.senderId = u.id "
+                  "WHERE m.receiverId = :user_id  ");
     query.bindValue(":user_id", userId);
 
     if (!query.exec()) {
@@ -131,10 +131,10 @@ void MessageModel::readAllSentMessages(int userId) {
     QSqlQuery query(dbManager->database());
 
     query.prepare("SELECT m.id, u.nom AS receiver_name, m.subject, "
-                  "CASE WHEN m.is_read = 1 THEN 'Oui' ELSE 'Non' END AS read_status "
+                  "CASE WHEN m.isRead = 1 THEN 'Oui' ELSE 'Non' END AS read_status "
                   "FROM t_messages m "
-                  "JOIN t_users u ON m.receiver_id = u.id "
-                  "WHERE m.sender_id = :user_id");
+                  "JOIN t_users u ON m.receiverId = u.id "
+                  "WHERE m.senderId = :user_id");
     query.bindValue(":user_id", userId);
 
     if (!query.exec()) {
@@ -151,7 +151,7 @@ void MessageModel::markAsRead(int messageId) {
     dbManager->open();
     QSqlQuery query(dbManager->database());
 
-    query.prepare("UPDATE t_messages SET is_read = 1 WHERE id = :id");
+    query.prepare("UPDATE t_messages SET isRead = 1 WHERE id = :id");
     query.bindValue(":id", messageId);
 
     if (!query.exec()) {
@@ -167,7 +167,7 @@ int MessageModel::getUnreadMessageCount(int userId) {
     QSqlQuery query(dbManager->database());
 
     query.prepare("SELECT COUNT(*) FROM t_messages "
-                  "WHERE receiver_id = :user_id AND is_read = 0 AND is_receiver_deleted = 0");
+                  "WHERE receiverId = :user_id AND isRead = 0 AND is_receiver_deleted = 0");
     query.bindValue(":user_id", userId);
 
     if (query.exec() && query.next()) {

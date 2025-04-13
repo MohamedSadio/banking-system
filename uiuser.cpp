@@ -17,11 +17,6 @@ UIUser::UIUser(QObject* controller) :
     connect(ui->pushButtonClose, SIGNAL(clicked()), controller, SLOT(onClose_UIUser()));
     connect(ui->pushButtonCreate, SIGNAL(clicked()), controller, SLOT(onCreate_UIUser()));
     connect(ui->pushButtonUpdate, SIGNAL(clicked()), controller, SLOT(onUpdate_UIUser()));
-    connect(ui->pushButtonFind, SIGNAL(clicked()), controller, SLOT(onFind_UIUser()));
-    connect(ui->pushButtonList, SIGNAL(clicked()), controller, SLOT(onList_UIUser()));
-    connect(ui->pushButtonSettings, SIGNAL(clicked()), controller, SLOT(onSettings_UIUser()));
-    connect(ui->pushButtonNotification, SIGNAL(clicked()), controller, SLOT(onNotifs_UIUser()));
-    connect(ui->pushButtonMessage, SIGNAL(clicked()), controller, SLOT(onMessages_UIUser()));
     connect(ui->comboBoxRole, SIGNAL(currentTextChanged(QString)), controller, SLOT(onComboBoxRoleChanged_UIUser()));
 }
 
@@ -127,6 +122,12 @@ void UIUser::setRoleEditable(bool editable)
 {
     ui->comboBoxRole->setEnabled(editable);
 }
+
+void UIUser::setIdEditable(bool editable){
+
+    ui->lineEditIdentifiant->setEnabled(editable);
+}
+
 
 void UIUser::updateTitle(QString libelle)
 {

@@ -54,6 +54,8 @@ public:
     bool marquerMessageCommeLu(int messageId, bool lu);
     int getNombreMessagesNonLus(int userId);
     QList<User> listerUtilisateursPourMessage();
+    QStringList getUserEmail(UserModel* userModel);
+    int getEmailId(QString email);
 
     Service(UserModel* userModel);
     Service(UserModel* userModel, AccountModel* accountModel);

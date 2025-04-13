@@ -401,7 +401,7 @@ bool Service::isTransactionAmountValid(int amount)
 }
 
 bool Service::envoyerMessage(int expediteurId, int destinataireId, QString objet, QString contenu) {
-    Message message(expediteurId, destinataireId, objet, contenu);
+    Message message(expediteurId, destinataireId, objet, contenu, false);
     return messageModel->create(message);
 }
 
@@ -439,4 +439,18 @@ int Service::getNombreMessagesNonLus(int userId) {
 
 QList<User> Service::listerUtilisateursPourMessage() {
     return userModel->list();
+}
+
+QStringList Service::getUserEmail(UserModel *userModel)
+{
+    // Appeler la méthode readAccountNumber() pour récupérer les numéros de compte
+    userModel->readUserEmail();
+
+    // Récupérer la liste des numéros de compte stockée dans l'attribut de la classe
+    return userModel->getUserEmail();
+}
+
+int Service::getEmailId(QString email)
+{
+    return userModel->getEmailId(email);
 }

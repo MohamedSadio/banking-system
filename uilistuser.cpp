@@ -14,9 +14,13 @@ UIListUser::UIListUser(QObject* controller) :
     qDebug("Contruction/Initialisation de la fenêtre UIListUser ...");
     ui->setupUi(this);
 
+    connect(ui->pushButtonAdd, SIGNAL(clicked()), controller, SLOT(onCreate_UIListUser()));
     connect(ui->pushButtonClose, SIGNAL(clicked()), controller, SLOT(onClose_UIListUser()));
     connect(ui->pushButtonDelete, SIGNAL(clicked()), controller, SLOT(onDelete_UIListUser()));
     connect(ui->pushButtonUpdate, SIGNAL(clicked()), controller, SLOT(onUpdate_UIListUser()));
+    connect(ui->pushButtonSettings, SIGNAL(clicked()), controller, SLOT(onSettings_UIListUser()));
+    connect(ui->pushButtonNotification, SIGNAL(clicked()), controller, SLOT(onNotifs_UIListUser()));
+    connect(ui->pushButtonMessage, SIGNAL(clicked()), controller, SLOT(onMessages_UIListUser()));
 }
 
 void UIListUser::setTableViewModel(UserModel* userModel)

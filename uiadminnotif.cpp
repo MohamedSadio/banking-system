@@ -18,9 +18,22 @@ UIAdminNotif::UIAdminNotif(QObject* controller) :
 
 }
 
+void UIAdminNotif::setTableViewModel(AdminNotifModel *adminNotifModel)
+{
+    ui->tableViewNotif->setModel(dynamic_cast<QAbstractItemModel*> (adminNotifModel));
+    ui->tableViewNotif->setSelectionModel(adminNotifModel->getSelectionModel());
+
+    ui->tableViewNotif->show();
+}
+
+void UIAdminNotif::top()
+{
+    ui->tableViewNotif->setCurrentIndex(ui->tableViewNotif->model()->index(0, 0));
+}
+
 void UIAdminNotif::updateTitle(QString libelle)
 {
-    this->setWindowTitle(libelle);
+    this->setWindowTitle("Centre de notifications - Administrateur : " + libelle);
 }
 
 UIAdminNotif::~UIAdminNotif()
