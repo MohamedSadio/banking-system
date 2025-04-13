@@ -25,6 +25,8 @@ UIClient::UIClient(QObject* controller) :
     //-
     connect(ui->pushButtonOK, SIGNAL(clicked()), controller, SLOT(onOK_UIClient()));
     connect(ui->pushButtonCancel, SIGNAL(clicked()), controller, SLOT(onCancel_UIClient()));
+    //-
+    connect(ui->pushButtonMessage2, SIGNAL(clicked()), controller, SLOT(onMessages_UIClient()));
 
 }
 

@@ -112,6 +112,7 @@ private slots:
     void onNotification_UIClient();
     void onOK_UIClient();
     void onCancel_UIClient();
+    void onMessages_UIClient();
 
     /*
      * Les slots de la fenêtre UIListClient

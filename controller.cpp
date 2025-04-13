@@ -544,6 +544,8 @@ void Controller::onCancel_UIClient()
     uiClient.hideTransactionForm();
 }
 
+void Controller::onMessages_UIClient(){}
+
 /*
  * Les slots de la fenêtre UIListClient
  */
