@@ -9,6 +9,7 @@ class Message
 public:
     Message();
     Message(int senderId, int receiverId, QString subject, QString content);
+    Message(int senderId, int receiverId, QString subject, QString content, bool isRead = false);
         Message(int id, int senderId, int receiverId, QString subject, QString content,
                 bool isRead);
 
