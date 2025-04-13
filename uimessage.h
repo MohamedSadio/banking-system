@@ -22,10 +22,11 @@ public:
 
     QString getMessageContent();
 
-    int getSelectedReceiverId();
+    QString getSelectedReceiverId();
     QString getSelectedReceiverName();
 
     QString getMessageSubject();
+    void setComboxReceiver(QStringList liste);
 
     void addReceiver(int userId, QString username, QString role);
 

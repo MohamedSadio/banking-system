@@ -41,9 +41,9 @@ QString UIMessage::getMessageContent()
     return ui->textEditMessageContent->toPlainText();
 }
 
-int UIMessage::getSelectedReceiverId()
+QString UIMessage::getSelectedReceiverId()
 {
-    return ui->comboBoxReceiver->currentData().toInt();
+    return ui->comboBoxReceiver->currentText();
 }
 
 QString UIMessage::getSelectedReceiverName()
@@ -54,6 +54,11 @@ QString UIMessage::getSelectedReceiverName()
 QString UIMessage::getMessageSubject()
 {
     return ui->lineEditSubject->text();
+}
+
+void UIMessage::setComboxReceiver(QStringList liste)
+{
+    ui->comboBoxReceiver->addItems(liste);
 }
 
 void UIMessage::addReceiver(int userId, QString username, QString role)

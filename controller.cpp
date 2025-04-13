@@ -348,6 +348,7 @@ void Controller::onMessages_UIUser()
 {
     uiUser.hide();
     uiMessage.show();
+    uiMessage.setComboxReceiver(service.getUserEmail(userModel));
 }
 
 /*
@@ -994,7 +995,8 @@ void Controller::onQuit_UIAdminNotif()
 void Controller::onSend_UIMessage()
 {
     int senderId = connectedUser.getId();
-    int receiverId = uiMessage.getSelectedReceiverId();
+    QString emailReceiver = uiMessage.getSelectedReceiverId();
+    int receiverId = service.getEmailId(emailReceiver);
     QString subject = uiMessage.getMessageSubject();
     QString content = uiMessage.getMessageContent();
 

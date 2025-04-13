@@ -436,3 +436,17 @@ int Service::getNombreMessagesNonLus(int userId) {
 QList<User> Service::listerUtilisateursPourMessage() {
     return userModel->list();
 }
+
+QStringList Service::getUserEmail(UserModel *userModel)
+{
+    // Appeler la méthode readAccountNumber() pour récupérer les numéros de compte
+    userModel->readUserEmail();
+
+    // Récupérer la liste des numéros de compte stockée dans l'attribut de la classe
+    return userModel->getUserEmail();
+}
+
+int Service::getEmailId(QString email)
+{
+    return userModel->getEmailId(email);
+}
