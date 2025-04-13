@@ -8,6 +8,8 @@
 #include "notifmodele.h"
 #include "settingsmodel.h"
 #include "adminnotifmodel.h"
+#include "gerantnotif.h"
+#include "gerantnotifmodel.h"
 #include "messagemodel.h"
 
 class Service
@@ -34,12 +36,12 @@ public:
     void listerLesComptes(int clientId);
     void listerLesTransactions(int clientId);
     void listerLesNotification(int clientId);
+    void listerLesNotificationGerant(int id);
     double getAccountBalance(const QString& accountNumber);
     QString getAccountStatus(const QString& accountNumber);
     // -
     void executeTransaction (QMap<QString, QString> input, bool &status, QString &message);
     void approuverVirement(QString numeroCompteTire, QString numeroCompteBeneficiaire, double montant);
-//    void rejeterVirement(int idTransaction);
     bool rejeterVirement(int idTransaction);
 
     bool updateSystemSettings(int transactionLimit, int minAmount, int maxAmount, bool notificationsEnabled);
@@ -64,6 +66,7 @@ public:
     Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel,SettingsModel* settingsModel);
     Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel,SettingsModel* settingsModel, AdminNotifModel* adminNotifModel, NotifModele* notifModele);
     Service(UserModel* userModel, AccountModel* accountModel, TransactionModel* transactionModel,SettingsModel* settingsModel, AdminNotifModel* adminNotifModel, NotifModele* notifModele, MessageModel* messageModel);
+    Service(GerantNotifModel* gerantNotifModel);
 
 private:
     UserModel* userModel;
@@ -72,6 +75,7 @@ private:
     NotifModele* notifModele;
     SettingsModel* settingsModel;
     AdminNotifModel* adminNotifModel;
+    GerantNotifModel* gerantNotifModel;
     MessageModel* messageModel;
 
     bool effectuerUnRetrait(int idClient, double montant);

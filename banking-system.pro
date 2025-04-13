@@ -13,6 +13,8 @@ SOURCES += \
     accountmodel.cpp \
     adminnotif.cpp \
     adminnotifmodel.cpp \
+    gerantnotif.cpp \
+    gerantnotifmodel.cpp \
     main.cpp \
     message.cpp \
     messagemodel.cpp \
@@ -27,6 +29,7 @@ SOURCES += \
     uiaddclient.cpp \
     uiadminnotif.cpp \
     uiclient.cpp \
+    uigerantnotif.cpp \
     uiinspectaccount.cpp \
     uilistuser.cpp \
     uilistclient.cpp \
@@ -48,6 +51,8 @@ HEADERS += \
     accountmodel.h \
     adminnotif.h \
     adminnotifmodel.h \
+    gerantnotif.h \
+    gerantnotifmodel.h \
     message.h \
     messagemodel.h \
     notif.h \
@@ -61,6 +66,7 @@ HEADERS += \
     uiaddclient.h \
     uiadminnotif.h \
     uiclient.h \
+    uigerantnotif.h \
     uiinspectaccount.h \
     uilistuser.h \
     uilistclient.h \
@@ -81,6 +87,7 @@ FORMS += \
     uiaddclient.ui \
     uiadminnotif.ui \
     uiclient.ui \
+    uigerantnotif.ui \
     uiinspectaccount.ui \
     uilistuser.ui \
     uilistclient.ui \

@@ -20,6 +20,7 @@
 #include "uiinspectaccount.h"
 #include "uisettings.h"
 #include "uiadminnotif.h"
+#include "uigerantnotif.h"
 #include "uimessage.h"
 
 class Controller : public QObject
@@ -42,6 +43,7 @@ private:
     UIInspectAccount uiInspectAccount {this};
     UISettings uiSettings {this};
     UIAdminNotif uiAdminNotif {this};
+    UIGerantNotif uiGerantNotif {this};
     UIMessage uiMessage {this};
 
     Role connectedUserType;
@@ -53,10 +55,12 @@ private:
     TransactionModel* transactionModel = new TransactionModel;
     NotifModele* notifModel = new NotifModele;
     AdminNotifModel* adminNotifModel = new AdminNotifModel;
+    GerantNotifModel* gerantNotifModel = new GerantNotifModel;
     SettingsModel* settingsModel = new SettingsModel;
     MessageModel* messageModel = new MessageModel;
 
-    Service service {userModel, accountModel, transactionModel, settingsModel, adminNotifModel, notifModel, messageModel}; // Le classe service pour déclencher les fonctionnalités
+    Service service {userModel, accountModel, transactionModel, settingsModel, adminNotifModel, notifModel, messageModel};
+    Service serviceGerant {gerantNotifModel};
 
 public:
     explicit Controller(QObject* parent = nullptr);
@@ -65,6 +69,7 @@ public:
     void executeUserList();
     void executeClientList();
     void reloadTransactions();
+    void executeNotifListGerant();
     void reloadAccounts();
 
 private slots:
@@ -117,8 +122,9 @@ private slots:
      * Les slots de la fenêtre UIListClient
      */
     void onClose_UIListClient();
-    //void onCreate_UIListClient();
     void onOuvrir_UIListClient();
+    void onMessages_UIListClient();
+    void onNotifs_UIListClient();    
 
     /*
      * Les slots de la fenêtre UIListAccount
@@ -171,6 +177,11 @@ private slots:
      * Les slots de la fenêtre UIAdminNotif
      */
     void onQuit_UIAdminNotif();
+
+    /*
+     * Les slots de la fenêtre UIGerantNotif
+     */
+    void onQuit_UIGerantNotif();
 
     /*
      * Les slots de la fenêtre UIMessage

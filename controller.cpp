@@ -47,6 +47,15 @@ void Controller::reloadTransactions()
     uiListTransaction.setTableViewModel(transactionModel);
 }
 
+void Controller::executeNotifListGerant()
+{
+    uiGerantNotif.setTableViewModel(gerantNotifModel);
+    serviceGerant.listerLesNotificationGerant(connectedUser.getId());
+    uiGerantNotif.show();
+    uiGerantNotif.top();
+    uiGerantNotif.updateTitle(connectedUser.getNom());
+}
+
 // Optionnel: Fonction pour recharger la liste des comptes
 void Controller::reloadAccounts() {
 
@@ -605,6 +614,19 @@ void Controller::onOuvrir_UIListClient()
     uiAddClient.updateTitle (connectedUser.getNom());
 }*/
 
+void Controller::onNotifs_UIListClient()
+{
+    uiListClient.hide();
+    executeNotifListGerant();
+}
+
+void Controller::onMessages_UIListClient()
+{
+    // uiListClient.hide();
+    // uiMessage.show();
+    // uiMessage.setComboxReceiver(service.getUserEmail(userModel));
+}
+
 /*
  * Les slots de la fenêtre UIListAccount
  */
@@ -983,6 +1005,12 @@ void Controller::onQuit_UIAdminNotif()
 {
     uiAdminNotif.hide();
     executeUserList();
+}
+
+void Controller::onQuit_UIGerantNotif()
+{
+    uiGerantNotif.hide();
+    executeClientList();
 }
 
 /*
