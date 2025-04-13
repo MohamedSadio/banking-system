@@ -12,6 +12,15 @@ void Controller::execute()
     uiLoginIn.show();
 }
 
+void Controller::executeUserList()
+{
+    uiListUser.setTableViewModel(userModel);
+    uiListUser.show();
+    uiListUser.top();
+    service.listerLesUsers();
+    uiListUser.updateTitle(connectedUser.getNom());
+}
+
 void Controller::executeClientList()
 {
     uiListAccount.setTableViewModel(accountModel);
@@ -70,10 +79,11 @@ void Controller::onSubmit_UILoginIn()
         switch (connectedUser.getEnumRole())
         {
             case ADMINISTRATEUR:
-                uiUser.show();
-                uiUser.reinit();
-                uiUser.deactivateUpdate();
-                uiUser.updateTitle (connectedUser.getNom());
+//                uiUser.show();
+//                uiUser.reinit();
+//                uiUser.deactivateUpdate();
+//                uiUser.updateTitle (connectedUser.getNom());
+            executeUserList();
 
             break;
 
@@ -121,6 +131,17 @@ void Controller::onExit_UILoginIn()
 /* Les slots de la fenêtre UIListUser
  *
  */
+
+void Controller::onCreate_UIListUser()
+{
+    uiListUser.close();
+    uiUser.show();
+    uiUser.reinit();
+    uiUser.deactivateUpdate();
+    uiUser.setRoleEditable(true);
+    uiUser.updateTitle (connectedUser.getNom());
+}
+
 void Controller::onUpdate_UIListUser()
 {
     QModelIndex index = userModel->getSelectionModel()->currentIndex();
@@ -181,6 +202,8 @@ void Controller::onUpdate_UIListUser()
         uiUser.show();
         uiUser.activateUpdate();
         uiUser.setRoleEditable(false);
+        uiUser.setIdEditable(false);
+
     }
 }
 
@@ -206,12 +229,15 @@ void Controller::onDelete_UIListUser()
 
 void Controller::onClose_UIListUser()
 {
-    uiListUser.hide();
+//    uiListUser.hide();
 
-    uiUser.reinit();
-    uiUser.show();
-    uiUser.deactivateUpdate();
-    uiUser.setRoleEditable(true);
+//    uiUser.reinit();
+//    uiUser.show();
+//    uiUser.deactivateUpdate();
+//    uiUser.setRoleEditable(true);
+    uiListUser.close();
+    uiLoginIn.reinit();
+    uiLoginIn.show();
 }
 
 
@@ -241,35 +267,15 @@ void Controller::onCreate_UIUser()
         QString statut = uiUser.getStatut();
 
         service.ajouterUnUser (nom, login, password, country, birthdate, email, role, statut);
+        uiUser.information("Ajout d'une nouvelle User",
+                           "Nouveau Utilisateur crée avec success !");
         uiUser.reinit();
+        uiUser.hide();
+        executeUserList();
+
     }
 }
 
-void Controller::onFind_UIUser()
-{
-    qDebug("Enter in function onFind_UIUser.");
-
-    bool ok;
-    int id = QInputDialog::getInt(nullptr, tr("Rechercher une User"),
-                                             tr("Entrer l'ID de la User : "), 25, 0, 225, 1, &ok);
-
-    if (ok == true) // Click sur le bouton OK
-    {
-        bool status = service.rechercherUnUser(id);
-        if (status == true)
-        {
-            // La User existe
-            uiListUser.setTableViewModel(userModel);
-            uiListUser.show();
-            uiUser.hide();
-        }
-        else
-        {
-            // La User n'existe pas
-            uiUser.warning("Rechercher une User", "La User recherchee n'existe pas.");
-        }
-    }
-}
 
 void Controller::onUpdate_UIUser()
 {
@@ -291,32 +297,25 @@ void Controller::onUpdate_UIUser()
         QString statut = uiUser.getStatut();
 
         service.modifierUnUser (nom, login, password, country, birthdate, email, role, statut);
-
+        uiUser.information("Mise a jour d'une User",
+                           "Utilisateur modifiée avec success !");
         uiUser.reinit();
         uiUser.hide();
 
         uiUser.deactivateUpdate();
-        uiListUser.show();
-        uiListUser.top();
+        executeUserList();
         uiListUser.updateTitle (connectedUser.getNom());
     }
 }
 
-void Controller::onList_UIUser()
-{
-    uiUser.hide();
-    uiListUser.setTableViewModel(userModel);
-    uiListUser.show();
-    uiListUser.top();
-    service.listerLesUsers();
-}
-
 void Controller::onClose_UIUser()
 {
-    uiUser.hide();
+//    uiUser.hide();
 
-    uiLoginIn.reinit();
-    uiLoginIn.show();
+//    uiLoginIn.reinit();
+//    uiLoginIn.show();
+    uiUser.close();
+    executeUserList();
 }
 
 void Controller::onComboBoxRoleChanged_UIUser()
@@ -332,21 +331,21 @@ void Controller::onComboBoxRoleChanged_UIUser()
     }
 }
 
-void Controller::onSettings_UIUser()
+void Controller::onSettings_UIListUser()
 {
-    uiUser.hide();
+    uiListUser.hide();
     uiSettings.show();
 }
 
-void Controller::onNotifs_UIUser()
+void Controller::onNotifs_UIListUser()
 {
-    uiUser.hide();
+    uiListUser.hide();
     uiAdminNotif.show();
 }
 
-void Controller::onMessages_UIUser()
+void Controller::onMessages_UIListUser()
 {
-    uiUser.hide();
+    uiListUser.hide();
     uiMessage.show();
     uiMessage.setComboxReceiver(service.getUserEmail(userModel));
 }
@@ -977,15 +976,13 @@ void Controller::onSave_UISettings()
 void Controller::onQuit_UISettings()
 {
     uiSettings.hide();
-    uiUser.reinit();
-    uiUser.show();
+    executeUserList();
 }
 
 void Controller::onQuit_UIAdminNotif()
 {
     uiAdminNotif.hide();
-    uiUser.reinit();
-    uiUser.show();
+    executeUserList();
 }
 
 /*
@@ -1034,7 +1031,7 @@ void Controller::onQuit_UIMessage()
 {
     // Fermer la fenêtre des messages et revenir à la fenêtre utilisateur
     uiMessage.hide();
-    uiUser.show();
+    executeUserList();
 }
 
 void Controller::onTabChanged_UIMessage(int tabIndex)

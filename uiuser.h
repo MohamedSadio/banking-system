@@ -38,6 +38,8 @@ public:
     void showStatut ();
     void show();
     void setRoleEditable(bool editable);
+    void setIdEditable(bool editable);
+
     void updateTitle (QString libelle);
 
     ~UIUser();

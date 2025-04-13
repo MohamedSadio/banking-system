@@ -106,6 +106,27 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayoutButtons">
      <item>
+      <widget class="QPushButton" name="pushButtonSettings">
+       <property name="text">
+        <string>Paramètre</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonNotification">
+       <property name="text">
+        <string>Notification</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonMessage">
+       <property name="text">
+        <string>Message</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>

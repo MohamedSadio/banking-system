@@ -62,6 +62,7 @@ public:
     explicit Controller(QObject* parent = nullptr);
     ~Controller();
     void execute();
+    void executeUserList();
     void executeClientList();
     void reloadTransactions();
     void reloadAccounts();
@@ -70,22 +71,21 @@ private slots:
     /* Les slots de la fenêtre UIListUser
      *
      */
+    void onCreate_UIListUser();
     void onUpdate_UIListUser();
     void onDelete_UIListUser();
     void onClose_UIListUser();
+    void onSettings_UIListUser();
+    void onNotifs_UIListUser();
+    void onMessages_UIListUser();
     void onComboBoxRoleChanged_UIUser();
 
     /*
      * Les slots de la fenêtre UIUser
      */
     void onCreate_UIUser();
-    void onFind_UIUser();
     void onUpdate_UIUser();
-    void onList_UIUser();
     void onClose_UIUser();
-    void onSettings_UIUser();
-    void onNotifs_UIUser();
-    void onMessages_UIUser();
 
     /*
      * Les slots de la fenetre UIAddCLient
