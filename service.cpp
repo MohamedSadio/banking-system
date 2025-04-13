@@ -397,7 +397,7 @@ bool Service::isTransactionAmountValid(int amount)
 }
 
 bool Service::envoyerMessage(int expediteurId, int destinataireId, QString objet, QString contenu) {
-    Message message(expediteurId, destinataireId, objet, contenu);
+    Message message(expediteurId, destinataireId, objet, contenu, false);
     return messageModel->create(message);
 }
 
