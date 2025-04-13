@@ -94,3 +94,5 @@ bool SettingsModel::loadSettings(int &transactionLimit, int &minAmount, int &max
     dbManager->close();
     return success;
 }
+
+

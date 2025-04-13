@@ -22,6 +22,7 @@ public:
     bool updateSettings(int transactionLimit, int minAmount, int maxAmount, bool notifications);
     bool loadSettings(int &transactionLimit, int &minAmount, int &maxAmount, bool &notifications);
 
+
 private:
     DBManager* dbManager;
     QItemSelectionModel* selectionModel;
