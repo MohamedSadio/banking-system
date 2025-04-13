@@ -1050,50 +1050,11 @@ void Controller::onOpenMessage_UIMessage(QModelIndex index)
     }
 
     QString senderName;
-    /*if (isReceivedMessage) {
-        User sender = service.getUser(message.getSenderId());
-        senderName = sender.getNom();
-    } else {
-        User receiver = service.getUser(message.getReceiverId());
-        senderName = "À: " + receiver.getNom();
-    }*/
 
     // Afficher les détails du message
     QDateTime date = QDateTime::currentDateTime();
     uiMessage.viewMessageDetails(senderName, message.getSubject(),
                                message.getContent(), date.toString("dd/MM/yyyy hh:mm"));
-}
-
-void Controller::onReply_UIMessage()
-{
-    /*int activeTab = uiMessage.tabWidgetMessages->currentIndex();
-    if (activeTab != 3) {
-        return; // Pas sur l'onglet de détail du message
-    }
-
-    int messageId = uiMessage.getSelectedMessageId();
-    if (messageId == -1) {
-        return;
-    }
-
-    Message originalMessage = service.getMessage(messageId);
-
-    uiMessage.tabWidgetMessages->setCurrentIndex(0);
-
-    for (int i = 0; i < uiMessage.comboBoxReceiver->count(); i++) {
-        if (uiMessage.comboBoxReceiver->itemData(i).toInt() == originalMessage.getSenderId()) {
-            uiMessage.comboBoxReceiver->setCurrentIndex(i);
-            break;
-        }
-    }
-
-    QString replySubject = "Re: " + originalMessage.getSubject();
-    uiMessage.lineEditSubject->setText(replySubject);
-
-    QString replyContent = "\n\n----- Message original -----\n" + originalMessage.getContent();
-    uiMessage.textEditMessageContent->setText(replyContent);
-
-    uiMessage.textEditMessageContent->moveCursor(QTextCursor::Start);*/
 }
 
 /*
@@ -1175,38 +1136,6 @@ void Controller::onOpenMessage_UIMessageGestionnaire(QModelIndex index)
     QDateTime date = QDateTime::currentDateTime();
     uiMessage.viewMessageDetails(senderName, message.getSubject(),
                                message.getContent(), date.toString("dd/MM/yyyy hh:mm"));
-}
-
-void Controller::onReply_UIMessageGestionnaire()
-{
-    /*int activeTab = uiMessage.tabWidgetMessages->currentIndex();
-    if (activeTab != 3) {
-        return; // Pas sur l'onglet de détail du message
-    }
-
-    int messageId = uiMessage.getSelectedMessageId();
-    if (messageId == -1) {
-        return;
-    }
-
-    Message originalMessage = service.getMessage(messageId);
-
-    uiMessage.tabWidgetMessages->setCurrentIndex(0);
-
-    for (int i = 0; i < uiMessage.comboBoxReceiver->count(); i++) {
-        if (uiMessage.comboBoxReceiver->itemData(i).toInt() == originalMessage.getSenderId()) {
-            uiMessage.comboBoxReceiver->setCurrentIndex(i);
-            break;
-        }
-    }
-
-    QString replySubject = "Re: " + originalMessage.getSubject();
-    uiMessage.lineEditSubject->setText(replySubject);
-
-    QString replyContent = "\n\n----- Message original -----\n" + originalMessage.getContent();
-    uiMessage.textEditMessageContent->setText(replyContent);
-
-    uiMessage.textEditMessageContent->moveCursor(QTextCursor::Start);*/
 }
 
 Controller::~Controller()

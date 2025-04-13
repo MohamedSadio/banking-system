@@ -181,7 +181,6 @@ private slots:
     void onQuit_UIMessage();
     void onTabChanged_UIMessage(int);
     void onOpenMessage_UIMessage(QModelIndex index);
-    void onReply_UIMessage();
 
     /*
      * Les slots de la fenêtre UIMessageGestionnaire
@@ -190,7 +189,6 @@ private slots:
     void onQuit_UIMessageGestionnaire();
     void onTabChanged_UIMessageGestionnaire(int);
     void onOpenMessage_UIMessageGestionnaire(QModelIndex index);
-    void onReply_UIMessageGestionnaire();
 
 };
 #endif // CONTROLLER_H

@@ -18,8 +18,6 @@ UIMessageGestionnaire::UIMessageGestionnaire(QObject* controller) :
 
     // Connecter les signaux aux slots du contrôleur
     connect(ui->pushButtonSend, SIGNAL(clicked()), controller, SLOT(onSend_UIMessageGestionnaire()));
-    connect(ui->pushButtonRefresh, SIGNAL(clicked()), controller, SLOT(onRefresh_UIMessageGestionnaire()));
-    connect(ui->pushButtonDelete, SIGNAL(clicked()), controller, SLOT(onDelete_UIMessageGestionnaire()));
     connect(ui->pushButtonQuit, SIGNAL(clicked()), controller, SLOT(onQuit_UIMessageGestionnaire()));
 
     // Connecter le changement d'onglet

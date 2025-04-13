@@ -19,8 +19,6 @@ UIMessage::UIMessage(QObject* controller) :
 
     // Connecter les signaux aux slots du contrôleur
     connect(ui->pushButtonSend, SIGNAL(clicked()), controller, SLOT(onSend_UIMessage()));
-    connect(ui->pushButtonRefresh, SIGNAL(clicked()), controller, SLOT(onRefresh_UIMessage()));
-    connect(ui->pushButtonDelete, SIGNAL(clicked()), controller, SLOT(onDelete_UIMessage()));
     connect(ui->pushButtonQuit, SIGNAL(clicked()), controller, SLOT(onQuit_UIMessage()));
 
     // Connecter le changement d'onglet
