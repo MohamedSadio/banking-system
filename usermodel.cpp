@@ -192,6 +192,28 @@ void UserModel::readUserEmail()
     this->userEmail = listeEmails;
 }
 
+void UserModel::readClientEmailsCreatesByManager(int managerID)
+{
+    dbManager->open();
+    QSqlQuery query(dbManager->database());
+
+    query.prepare("SELECT email FROM t_users where create_by = :managerId and role= 'CLIENT'");
+    query.bindValue(":managerId", managerID);
+
+    // Créer un tableau pour stocker les résultats
+    QStringList listeEmails;
+
+    // Récupérer les résultats et les ajouter au tableau
+    while (query.next()) {
+        listeEmails << query.value(0).toString();
+    }
+
+    dbManager->close();
+
+    // Stocker la liste des numéros de compte dans un attribut de la classe
+    this->userEmail = listeEmails;
+}
+
 int UserModel::getEmailId(QString email)
 {
     dbManager->open();

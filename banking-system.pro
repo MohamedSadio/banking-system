@@ -37,6 +37,7 @@ SOURCES += \
     uilistvirement.cpp \
     uiloginin.cpp \
     uimessage.cpp \
+    uimessagegestionnaire.cpp \
     uinotif.cpp \
     uisettings.cpp \
     uiuser.cpp \
@@ -74,6 +75,7 @@ HEADERS += \
     uilistvirement.h \
     uiloginin.h \
     uimessage.h \
+    uimessagegestionnaire.h \
     uinotif.h \
     uisettings.h \
     uiuser.h \
@@ -95,6 +97,7 @@ FORMS += \
     uilistvirement.ui \
     uiloginin.ui \
     uimessage.ui \
+    uimessagegestionnaire.ui \
     uinotif.ui \
     uisettings.ui \
     uiuser.ui \

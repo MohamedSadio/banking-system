@@ -482,10 +482,10 @@ QList<User> Service::listerUtilisateursPourMessage() {
 
 QStringList Service::getUserEmail(UserModel *userModel)
 {
-    // Appeler la méthode readAccountNumber() pour récupérer les numéros de compte
+    // Appeler la méthode readUserEmail() pour récupérer les numéros de compte
     userModel->readUserEmail();
 
-    // Récupérer la liste des numéros de compte stockée dans l'attribut de la classe
+    // Récupérer la liste des emails stockée dans l'attribut de la classe
     return userModel->getUserEmail();
 }
 
@@ -493,3 +493,5 @@ int Service::getEmailId(QString email)
 {
     return userModel->getEmailId(email);
 }
+
+

@@ -1,87 +1,86 @@
-#include "uimessage.h"
-#include "ui_uimessage.h"
+#include "uimessagegestionnaire.h"
+#include "ui_uimessagegestionnaire.h"
 #include <QMessageBox>
 #include <QSqlError>
 
-
-UIMessage::UIMessage(QWidget *parent) :
+UIMessageGestionnaire::UIMessageGestionnaire(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::UIMessage)
+    ui(new Ui::UIMessageGestionnaire)
 {
     ui->setupUi(this);
 }
 
-UIMessage::UIMessage(QObject* controller) :
-    ui(new Ui::UIMessage)
+UIMessageGestionnaire::UIMessageGestionnaire(QObject* controller) :
+    ui(new Ui::UIMessageGestionnaire)
 {
-    qDebug("Construction/Initialisation de la fenêtre UIMessage ...");
+    qDebug("Construction/Initialisation de la fenêtre UIMessageGestionnaire ...");
     ui->setupUi(this);
 
     // Connecter les signaux aux slots du contrôleur
-    connect(ui->pushButtonSend, SIGNAL(clicked()), controller, SLOT(onSend_UIMessage()));
-    connect(ui->pushButtonQuit, SIGNAL(clicked()), controller, SLOT(onQuit_UIMessage()));
+    connect(ui->pushButtonSend, SIGNAL(clicked()), controller, SLOT(onSend_UIMessageGestionnaire()));
+    connect(ui->pushButtonQuit, SIGNAL(clicked()), controller, SLOT(onQuit_UIMessageGestionnaire()));
 
     // Connecter le changement d'onglet
-    connect(ui->tabWidgetMessages, SIGNAL(currentChanged(int)), controller, SLOT(onTabChanged_UIMessage(int)));
+    connect(ui->tabWidgetMessages, SIGNAL(currentChanged(int)), controller, SLOT(onTabChanged_UIMessageGestionnaire(int)));
 
     // Connecter le double-clic sur les messages pour les ouvrir
-    connect(ui->tableViewReceived, SIGNAL(doubleClicked(QModelIndex)), controller, SLOT(onOpenMessage_UIMessage(QModelIndex)));
-    connect(ui->tableViewSent, SIGNAL(doubleClicked(QModelIndex)), controller, SLOT(onOpenMessage_UIMessage(QModelIndex)));
+    connect(ui->tableViewReceived, SIGNAL(doubleClicked(QModelIndex)), controller, SLOT(onOpenMessage_UIMessageGestionnaire(QModelIndex)));
+    connect(ui->tableViewSent, SIGNAL(doubleClicked(QModelIndex)), controller, SLOT(onOpenMessage_UIMessageGestionnaire(QModelIndex)));
 }
 
-void UIMessage::updateTitle(QString libelle)
+void UIMessageGestionnaire::updateTitle(QString libelle)
 {
     this->setWindowTitle(libelle);
 }
 
-QString UIMessage::getMessageContent()
+QString UIMessageGestionnaire::getMessageContent()
 {
     return ui->textEditMessageContent->toPlainText();
 }
 
-QString UIMessage::getSelectedReceiverId()
+QString UIMessageGestionnaire::getSelectedReceiverId()
 {
     return ui->comboBoxReceiver->currentText();
 }
 
-QString UIMessage::getSelectedReceiverName()
+QString UIMessageGestionnaire::getSelectedReceiverName()
 {
     return ui->comboBoxReceiver->currentText();
 }
 
-QString UIMessage::getMessageSubject()
+QString UIMessageGestionnaire::getMessageSubject()
 {
     return ui->lineEditSubject->text();
 }
 
-void UIMessage::setComboxReceiver(QStringList liste)
+void UIMessageGestionnaire::setComboxReceiver(QStringList liste)
 {
     ui->comboBoxReceiver->addItems(liste);
 }
 
-void UIMessage::addReceiver(int userId, QString username, QString role)
+void UIMessageGestionnaire::addReceiver(int userId, QString username, QString role)
 {
     // Ajouter l'utilisateur avec son rôle dans la liste déroulante
     QString displayText = username + " (" + role + ")";
     ui->comboBoxReceiver->addItem(displayText, userId);
 }
 
-void UIMessage::clearRecipients()
+void UIMessageGestionnaire::clearRecipients()
 {
     ui->comboBoxReceiver->clear();
 }
 
-QTableView* UIMessage::getReceivedMessagesView()
+QTableView* UIMessageGestionnaire::getReceivedMessagesView()
 {
     return ui->tableViewReceived;
 }
 
-QTableView* UIMessage::getSentMessagesView()
+QTableView* UIMessageGestionnaire::getSentMessagesView()
 {
     return ui->tableViewSent;
 }
 
-int UIMessage::getSelectedMessageId()
+int UIMessageGestionnaire::getSelectedMessageId()
 {
     int activeTab = ui->tabWidgetMessages->currentIndex();
 
@@ -105,13 +104,13 @@ int UIMessage::getSelectedMessageId()
     return -1;
 }
 
-void UIMessage::clearMessageForm()
+void UIMessageGestionnaire::clearMessageForm()
 {
     ui->lineEditSubject->clear();
     ui->textEditMessageContent->clear();
 }
 
-void UIMessage::viewMessageDetails(QString sender, QString subject,
+void UIMessageGestionnaire::viewMessageDetails(QString sender, QString subject,
                                  QString content, QString date)
 {
     ui->labelSenderValue->setText(sender);
@@ -122,7 +121,8 @@ void UIMessage::viewMessageDetails(QString sender, QString subject,
     ui->tabWidgetMessages->setCurrentIndex(3);
 }
 
-UIMessage::~UIMessage()
+
+UIMessageGestionnaire::~UIMessageGestionnaire()
 {
     delete ui;
 }
