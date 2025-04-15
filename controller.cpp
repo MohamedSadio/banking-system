@@ -563,6 +563,15 @@ void Controller::onClose_UIListClient()
     uiLoginIn.show();
 }
 
+void Controller::onCreate_UIListClient()
+{
+    uiListClient.close();
+    uiAddClient.setIdEditableFalse();
+    uiAddClient.show();
+    uiAddClient.reinit();
+    uiAddClient.updateTitle (connectedUser.getNom());
+}
+
 void Controller::onOuvrir_UIListClient()
 {
     QModelIndex index = userModel->getSelectionModel()->currentIndex();
@@ -608,21 +617,14 @@ void Controller::onOuvrir_UIListClient()
 void Controller::onMessage_UIListClient()
 {
     uiListClient.hide();
-    uiMessage.show();
-    uiMessage.setComboxReceiver(service.getUserEmail(userModel));
+    uiMessageGestionnaire.show();
+    uiMessageGestionnaire.setComboxReceiver(service.getUserEmail(userModel));
 }
 
 void Controller::onNotifs_UIListClient()
 {
     uiListClient.hide();
     executeNotifListGerant();
-}
-
-void Controller::onMessages_UIListClient()
-{
-    // uiListClient.hide();
-    // uiMessage.show();
-    // uiMessage.setComboxReceiver(service.getUserEmail(userModel));
 }
 
 /*
@@ -1092,49 +1094,49 @@ void Controller::onOpenMessage_UIMessage(QModelIndex index)
 void Controller::onSend_UIMessageGestionnaire()
 {
     int senderId = connectedUser.getId();
-    QString emailReceiver = uiMessage.getSelectedReceiverId();
+    QString emailReceiver = uiMessageGestionnaire.getSelectedReceiverId();
     int receiverId = service.getEmailId(emailReceiver);
-    QString subject = uiMessage.getMessageSubject();
-    QString content = uiMessage.getMessageContent();
+    QString subject = uiMessageGestionnaire.getMessageSubject();
+    QString content = uiMessageGestionnaire.getMessageContent();
 
     if (subject.isEmpty() || content.isEmpty()) {
-        uiMessage.warning("Envoi impossible", "L'objet et le contenu du message sont obligatoires.");
+        uiMessageGestionnaire.warning("Envoi impossible", "L'objet et le contenu du message sont obligatoires.");
         return;
     }
 
     // Enregistrer le message dans la base de données en utilisant la méthode service existante
     if (service.envoyerMessage(senderId, receiverId, subject, content)) {
-        uiMessage.information("Envoi réussi", "Votre message a été envoyé avec succès.");
-        uiMessage.clearMessageForm();
+        uiMessageGestionnaire.information("Envoi réussi", "Votre message a été envoyé avec succès.");
+        uiMessageGestionnaire.clearMessageForm();
 
         service.listerMessagesEnvoyes(connectedUser.getId());
-        uiMessage.getSentMessagesView()->setModel(messageModel);
+        uiMessageGestionnaire.getSentMessagesView()->setModel(messageModel);
     } else {
-        uiMessage.critical("Erreur", "Une erreur est survenue lors de l'envoi du message.");
+        uiMessageGestionnaire.critical("Erreur", "Une erreur est survenue lors de l'envoi du message.");
     }
 }
 
 void Controller::onQuit_UIMessageGestionnaire()
 {
     // Fermer la fenêtre des messages et revenir à la fenêtre utilisateur
-    uiMessage.hide();
-    executeUserList();
+    uiMessageGestionnaire.hide();
+    executeClientList();
 }
 
 void Controller::onTabChanged_UIMessageGestionnaire(int tabIndex)
 {
     if (tabIndex == 0) { // Nouveau message
-        uiMessage.clearMessageForm();
+        uiMessageGestionnaire.clearMessageForm();
 
         // Actualiser la liste des destinataires possibles
-        uiMessage.clearRecipients();
+        uiMessageGestionnaire.clearRecipients();
 
     } else if (tabIndex == 1) { // Messages reçus
         service.listerMessagesRecus(connectedUser.getId());
-        uiMessage.getReceivedMessagesView()->setModel(messageModel);
+        uiMessageGestionnaire.getReceivedMessagesView()->setModel(messageModel);
     } else if (tabIndex == 2) { // Messages envoyés
         service.listerMessagesEnvoyes(connectedUser.getId());
-        uiMessage.getSentMessagesView()->setModel(messageModel);
+        uiMessageGestionnaire.getSentMessagesView()->setModel(messageModel);
     }
 }
 
@@ -1162,7 +1164,7 @@ void Controller::onOpenMessage_UIMessageGestionnaire(QModelIndex index)
 
     // Afficher les détails du message
     QDateTime date = QDateTime::currentDateTime();
-    uiMessage.viewMessageDetails(senderName, message.getSubject(),
+    uiMessageGestionnaire.viewMessageDetails(senderName, message.getSubject(),
                                message.getContent(), date.toString("dd/MM/yyyy hh:mm"));
 }
 

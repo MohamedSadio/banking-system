@@ -119,13 +119,12 @@ private slots:
     void onNotification_UIClient();
     void onOK_UIClient();
     void onCancel_UIClient();
-    void onMessages_UIClient();
 
     /*
      * Les slots de la fenêtre UIListClient
      */
     void onClose_UIListClient();
-    //void onCreate_UIListClient();
+    void onCreate_UIListClient();
     void onOuvrir_UIListClient();
     void onMessage_UIListClient();
     void onNotifs_UIListClient();
@@ -191,7 +190,6 @@ private slots:
      * Les slots de la fenêtre UIMessage
      */
     void onSend_UIMessage();
-    void onRefresh_UIMessage();
     void onQuit_UIMessage();
     void onTabChanged_UIMessage(int);
     void onOpenMessage_UIMessage(QModelIndex index);

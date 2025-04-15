@@ -337,13 +337,13 @@ void Service::approuverVirement(QString numeroCompteTire, QString numeroCompteBe
 //    Notif notif(idClient, compteTire.getId(), "Votre virement a été approuvé.", "Le virement de " + QString::number(montant) + " vers le compte " + numeroCompteBeneficiaire + " a été effectué avec succès.", today.toString("yyyy-MM-ddT") + now.toString("HH:mm:ss.zzz"));
 //    notifModele->create(notif);
 
-    GerantNotif gerantNotif;
-    gerantNotif.setRole("GERANT");
-    gerantNotif.setTypeNotif("VIREMENT_VALIDE");
-    gerantNotif.setReferenceId(transaction.getId());
-    gerantNotif.setMessage("Un virement a été validé avec succès.");
-    gerantNotif.setDate(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss.zzz"));
-    gerantNotifModel->create(gerantNotif);
+//    GerantNotif gerantNotif;
+//    gerantNotif.setRole("GERANT");
+//    gerantNotif.setTypeNotif("VIREMENT_VALIDE");
+//    gerantNotif.setReferenceId(transaction.getId());
+//    gerantNotif.setMessage("Un virement a été validé avec succès.");
+//    gerantNotif.setDate(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss.zzz"));
+//    gerantNotifModel->create(gerantNotif);
 }
 
 bool Service::rejeterVirement(int idTransaction)
@@ -425,23 +425,9 @@ bool Service::isTransactionAmountValid(int amount)
     return (amount >= minAmount && amount <= maxAmount && amount <= transactionLimit);
 }
 
-bool Service::envoyerMessage(int expediteurId, int destinataireId, QString objet, QString contenu)
-{
+bool Service::envoyerMessage(int expediteurId, int destinataireId, QString objet, QString contenu) {
     Message message(expediteurId, destinataireId, objet, contenu, false);
-    bool success = messageModel->create(message);
-
-    if (success) {
-        // Créer une notification pour le gérant
-        GerantNotif gerantNotif;
-        gerantNotif.setRole("GERANT");
-        gerantNotif.setTypeNotif("MESSAGE_RECU");
-        gerantNotif.setReferenceId(message.getId());
-        gerantNotif.setMessage("Vous avez reçu un nouveau message.");
-        gerantNotif.setDate(QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss.zzz"));
-        gerantNotifModel->create(gerantNotif);
-    }
-
-    return success;
+    return messageModel->create(message);
 }
 
 void Service::listerMessagesRecus(int userId) {

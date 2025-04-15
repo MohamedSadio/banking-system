@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>UIMessage</class>
+ <class>UIMessageGestionnaire</class>
  <widget class="QMainWindow" name="UIMessageGestionnaire">
   <property name="geometry">
    <rect>
@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidgetMessages">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabNewMessage">
        <attribute name="title">
